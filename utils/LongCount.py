@@ -34,7 +34,7 @@ class LongCount:
 
         return raw_sum % max, int(raw_sum >= max)
 
-    def get_num_kin(self):
+    def get_total_kin(self):
         return (self.kin + (self.winal * 20) + (self.tun * 20 * 18) +
             (self.katun * 18 * (20 ** 2)) + (self.baktun * 18 * (20 ** 3)))
 
