@@ -40,5 +40,13 @@ class Tzolkin:
         new_num = (self.tzolkin_num + num_days) % 260
         self.reset_by_tzolkin_num(new_num)
 
+        return self
+
+    def __eq__(self, date):
+        if self.day_name == date.day_name and self.day_number == date.day_number:
+            return True
+        else:
+            return False
+
     def __repr__(self):
         return f"{self.day_number} {self.day_name}"

@@ -26,9 +26,20 @@ class Haab:
         self.month_name = haab_idx_to_month[new_num // 20]
         self.month_number = new_num % 20
 
+        return self
+
     def add_days(self, num_days):
         self.haab_num = (self.haab_num + num_days) % 365
         self.reset_by_haab_num(self.haab_num)
+
+        return self
+
+    def __eq__(self, date):
+        if self.month_name == date.month_name and self.month_number == date.month_number:
+            return True
+        else:
+            return False
+
 
     def __repr__(self):
         return f"{self.month_number} {self.month_name}"
