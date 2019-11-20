@@ -16,7 +16,7 @@ class Mayadate:
     def __infer_lc_recursive(self, lc, poss_dates):
         if None not in lc:
             print(lc)
-            if self.calendar_round == LongCount(*lc).get_calendar_round():
+            if self.calendar_round.match(LongCount(*lc).get_calendar_round()):
                 return LongCount(*lc)
             return
 

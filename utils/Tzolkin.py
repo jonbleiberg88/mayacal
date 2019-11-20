@@ -109,5 +109,8 @@ class Tzolkin:
         else:
             return False
 
+    def __sub__(self, date):
+        return abs(self.tzolkin_num - date.tzolkin_num)
+
     def __repr__(self):
         return f"{self.day_number} {self.day_name}"

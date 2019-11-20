@@ -58,6 +58,9 @@ class Haab:
         else:
             return False
 
+    def __sub__(self, date):
+        return abs(self.haab_num - date.haab_num)
+
 
     def __repr__(self):
         return f"{self.month_number} {self.month_name}"

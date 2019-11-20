@@ -69,6 +69,13 @@ class CalendarRound:
             lc = lc.add_days(18980) #LCM of 260 and 365
 
 
+    def match(self, date):
+        if self.tzolkin.match(date.tzolkin) and self.haab.match(date.haab):
+            return True
+
+        else:
+            return False
+
     def __eq__(self, date):
         if self.tzolkin == date.tzolkin and self.haab == date.haab:
             return True
