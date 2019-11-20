@@ -34,8 +34,26 @@ class Haab:
 
         return self
 
+    def __fuzzy_eq(self, v1, v2):
+        if v1 == v2 or v1 is None or v2 is None:
+            return True
+
+        return False
+
+    def match(self, date):
+        name_same = self.__fuzzy_eq(self.month_name, date.month_name)
+        num_same = self.__fuzzy_eq(self.month_number, date.month_number)
+
+        if name_same and month_same:
+            return True
+        else:
+            return False
+
     def __eq__(self, date):
-        if self.month_name == date.month_name and self.month_number == date.month_number:
+        name_same = self.month_name == date.month_name
+        num_same = self.month_number == date.month_number
+
+        if name_same and month_same:
             return True
         else:
             return False

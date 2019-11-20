@@ -1,2 +1,2 @@
 # mayacal
-Implementation of some datetime features for Classical Maya calendar
+WORK IN PROGRESS - Implementation of some datetime features for Classical Maya calendar
