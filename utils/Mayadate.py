@@ -3,13 +3,13 @@ from LongCount import *
 
 class Mayadate:
     def __init__(self, long_count=None, calendar_round=None):
-        if self.long_count is None:
+        if long_count is None:
             self.LongCount = LongCount(None, None, None, None, None)
         else:
             self.long_count = long_count
 
         if calendar_round is None:
-             if not self.long_count.has_missing():
+            if not self.long_count.has_missing():
                 self.calendar_round = self.long_count.get_calendar_round()
             else:
                 self.calendar_round = CalendarRound(None, None)

@@ -1,3 +1,5 @@
+import math
+import datetime
 
 
 class JulianDate:
@@ -8,24 +10,46 @@ class JulianDate:
         self.year = year
 
     def to_julian_day(self):
-    """
+        """Converts the Julian Calendar date to its corresponding Julian Day number
 
-    Adapted from: https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_calendar_date_to_Julian_Day_Number
+        Note that the algorithm is only valid for Julian Day numbers greater than or
+        equal to zero, i.e. Julian calendar years after -4712 (4713 BCE). Earlier
+        calendar years will raise a ValueError.
 
-    """
+        Adapted from: https://www.researchgate.net/publication/316558298_Date_Algorithms#pf5
+
+        Returns:
+            (int): The Julian Day number corresponding to the Julian Calendar date
+
+        """
+
         if self.year < -4712:
             raise ValueError("Algorithm only valid for Julian year greater than or equal to -4712")
 
-        return 367 × self.year − (7 × (self.year + 5001 + (self.month − 9)/7))/4 +
-            (275 × self.month)/9 + self.day + 1729777
+        if self.month < 3:
+            M = self.month + 12
+            Y = self.year - 1
+        else:
+            M = self.month
+            Y = self.year
 
-    def to_gregorian(self):
-        return julian_day_to_gregorian(self.to_julian_day())
+        D = self.day
+
+        return D + (153 * M - 457) // 5 + 365 * Y + math.floor(Y / 4) + 1721116.5
+
+    def to_gregorian(self, as_datetime=False):
+        return julian_day_to_gregorian(round(self.to_julian_day()))
 
 
+    def to_mayadate(self, correlation=584283):
 
-    def to_mayadate(self, correlation):
-        return 
+        from LongCount import LongCount, kin_to_long_count
+        from Mayadate import Mayadate
+
+        num_kin = round(self.to_julian_day()) - correlation
+        long_count = kin_to_long_count(num_kin)
+
+        return Mayadate(long_count, None)
 
     def __repr__(self):
         return f"({self.day}, {self.month}, {self.year})"
@@ -36,6 +60,69 @@ class JulianDate:
 
         elif self.year <= 0:
             return f"{_num_to_month(self.month)} {self.day}, {abs(self.year) + 1} BCE"
+
+
+class GregorianDate:
+    def __init__(self, day, month, year):
+        self.day = day
+        self.month = month
+        self.year = year
+
+    def to_julian_day(self):
+        """Converts a (proleptic) Gregorian calendar date to its Julian Day number equivalent
+
+        Adapted from: https://www.researchgate.net/publication/316558298_Date_Algorithms#pf5
+
+        Note that this function requires the astronomical year for years before 1 CE,
+        i.e. 1 BCE = 0, 2 BCE = -1, etc.
+
+        Args:
+            day (int): The day of the Gregorian calendar date
+            month (int): The month number of the Gregorian calendar date
+            year (int): The (astronomical) year of the Gregorian calendar date
+
+        """
+        if self.month < 3:
+            M = self.month + 12
+            Y = self.year - 1
+        else:
+            M = self.month
+            Y = self.year
+
+        D = self.day
+
+        return D + (153 * M - 457) // 5 + 365 * Y + math.floor(
+            Y / 4) - math.floor(Y / 100) + math.floor(Y / 400) + 1721118.5
+
+    def to_julian(self):
+        return julian_day_to_julian(round(self.to_julian_day))
+
+    def to_mayadate(self, correlation=584283):
+        from LongCount import LongCount, kin_to_long_count
+        from Mayadate import Mayadate
+
+        num_kin = round(self.to_julian_day()) - correlation
+        long_count = kin_to_long_count(num_kin)
+
+        return Mayadate(long_count, None)
+
+    def to_datetime(self):
+
+        if self.year < 1:
+            raise ValueError("Datetime date objects do not support years before 1 CE")
+
+        return datetime.date(self.year, self.month, self.day)
+
+    def __repr__(self):
+        return f"({self.day}, {self.month}, {self.year})"
+
+    def __str__(self):
+        if self.year > 0:
+            return f"{_num_to_month(self.month)} {self.day}, {self.year} CE"
+
+        elif self.year <= 0:
+            return f"{_num_to_month(self.month)} {self.day}, {abs(self.year) + 1} BCE"
+
 
 
 
@@ -59,6 +146,7 @@ def _convert_julian_day(julian_day, mode='julian'):
     """
     if julian_day < 0:
         raise ValueError("Algorithm only valid for Julian Day greater than or equal to zero")
+    julian_day = round(julian_day)
 
     # algorithm parameters
     y = 4716
@@ -111,7 +199,10 @@ def julian_day_to_julian(julian_day):
             Julian calendar.
 
     """
-    return _convert_julian_day(julian_day, mode='julian')
+
+    day, month, year = _convert_julian_day(julian_day, mode='julian')
+
+    return JulianDate(day, month, year)
 
 
 
@@ -132,7 +223,29 @@ def julian_day_to_gregorian(julian_day):
             Gregorian calendar.
 
     """
-    return _convert_julian_day(julian_day, mode='gregorian')
+    day, month, year = _convert_julian_day(julian_day, mode='gregorian')
+
+    return GregorianDate(day, month, year)
+
+def datetime_to_gregorian(date):
+
+    return GregorianDate(date.day, date.month, date.year)
+
+def datetime_to_julian(date):
+
+    g = GregorianDate(date.day, date.month, date.year)
+    return g.to_julian()
+
+def datetime_to_julian_day(date):
+
+    g = GregorianDate(date.day, date.month, date.year)
+    return g.to_julian_day()
+
+def datetime_to_mayadate(date):
+
+    g = GregorianDate(date.day, date.month, date.year)
+    return g.to_mayadate()
+
 
 def _num_to_month(num):
 
