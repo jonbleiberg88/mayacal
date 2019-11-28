@@ -43,7 +43,7 @@ class Tzolkin:
                 if implied_num != tzolkin_num:
                     raise ValueError(f"Provided Tzolkin number {tzolkin_num} does not match provided day name and number {day_number} {day_name}")
 
-            self.reset_by_tzolkin_num(self, tzolkin_num)
+            self.reset_by_tzolkin_num(tzolkin_num)
 
         else:
             if day_name not in tzolkin_days:
@@ -73,14 +73,30 @@ class Tzolkin:
         self.tzolkin_num = new_num
         self.day_number, self.day_name = tzolkin_num_to_day[self.tzolkin_num]
 
-    def add_days(self, num_days):
+    def add_days(self, num_days, in_place=False):
         """ Adds days to the current Tzolkin object
+
+        Args:
+            num_days (int): Number of days to add to the Tzolkin object
+            in_place (bool): Whther to modify the existing object or return a
+                new object. Defaults to False.
+        Returns:
+            A new Tzolkin object num_days ahead of the previous object
 
         """
         new_num = (self.tzolkin_num + num_days) % 260
-        self.reset_by_tzolkin_num(new_num)
+        if in_place:
+            self.reset_by_tzolkin_num(new_num)
+            return self
 
-        return self
+        else:
+            return Tzolkin(tzolkin_num=new_num)
+
+    def has_missing(self):
+        if self.day_name is None or self.day_number is None:
+            return True
+
+        return False
 
     def match(self, date):
         name_same = self.__fuzzy_eq(self.day_name, date.day_name)

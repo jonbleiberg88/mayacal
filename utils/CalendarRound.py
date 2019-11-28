@@ -3,20 +3,33 @@ from Tzolkin import *
 
 class CalendarRound:
     def __init__(self, tzolkin=None, haab=None):
-        self.tzolkin = tzolkin
-        self.haab = haab
+        if tzolkin is None:
+            self.tzolkin = Tzolkin(None, None)
+        else:
+            self.tzolkin = tzolkin
+
+        if haab is None:
+            self.haab = Haab(None, None)
+        else:
+            self.haab = haab
 
         self.__check_valid()
 
+    def has_missing(self):
+        return (self.tzolkin.has_missing() or self.haab.has_missing())
+
 
     def add_days(self, num_days):
-        self.haab.add_days(num_days)
-        self.tzolkin.add_days(num_days)
+        self.haab.add_days(num_days, True)
+        self.tzolkin.add_days(num_days, True)
 
         return self
 
 
     def __check_valid(self):
+        if self.haab.month_number is None or self.tzolkin.day_name is None:
+            return
+
         if self.haab.month_number % 5 == 0:
             if self.tzolkin.day_name not in ("Kaban", "Ik", "Manik", "Eb"):
                 raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")

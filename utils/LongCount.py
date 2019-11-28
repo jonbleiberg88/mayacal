@@ -1,4 +1,5 @@
 from CalendarRound import *
+from utils import julian_day_to_gregorian, julian_day_to_julian
 
 class LongCount:
     def __init__(self, baktun=0, katun=0, tun=0, winal=0, kin=0):
@@ -46,8 +47,15 @@ class LongCount:
 
 
     def get_total_kin(self):
-        return (self.kin + (self.winal * 20) + (self.tun * 20 * 18) +
-            (self.katun * 18 * (20 ** 2)) + (self.baktun * 18 * (20 ** 3)))
+
+        if self.has_missing():
+            raise ValueError("Operation not valid for incomplete Long Count dates, try inferring the missing portions")
+
+        else:
+            total_kin = (self.kin + (self.winal * 20) + (self.tun * 20 * 18) +
+                (self.katun * 18 * (20 ** 2)) + (self.baktun * 18 * (20 ** 3)))
+
+            return total_kin
 
     def get_calendar_round(self):
         # Mythological start date
@@ -60,18 +68,60 @@ class LongCount:
         from Mayadate import Mayadate
         return Mayadate(self, self.get_calendar_round())
 
-    def add_days(self, num_days):
-        self = kin_to_long_count(self.get_total_kin() + num_days)
-        return self
+    def add_days(self, num_days, in_place=False):
+        total_days = self.get_total_kin() + num_days
+        if in_place:
+            self = kin_to_long_count(total_days)
+            return self
+        else:
+            return kin_to_long_count(total_days)
 
     def get_glyph_g(self):
-        g_num = (self.winal * 20 + self.kin)  % 9
+        g_num = (self.winal * 20 + self.kin) % 9
         if g_num == 0:
             g_num = 9
         return f"G{g_num}"
 
     def to_list(self):
         return [self.baktun, self.katun, self.tun, self.winal, self.kin]
+
+    def to_julian_day(self, correlation=584283):
+
+        return self.get_total_kin() + correlation
+
+    def to_julian(self, correlation=584283):
+
+        julian_day = self.to_julian_day(correlation)
+
+        return julian_day_to_julian(julian_day)
+
+    def to_gregorian(self, correlation=584283):
+
+        julian_day = self.to_julian_day(correlation)
+
+        return julian_day_to_gregorian(julian_day)
+
+    def has_missing(self):
+
+        if self.baktun is None:
+            return True
+
+        if self.katun is None:
+            return True
+
+        if self.tun is None:
+            return True
+
+        if self.winal is None:
+            return True
+
+        if self.kin is None:
+            return True
+
+        return False
+
+
+
 
     def __eq__(self, date):
         if self.get_total_kin() == date.get_total_kin():
@@ -125,6 +175,8 @@ class DistanceNumber(LongCount):
             return f"-{self.long_count.__repr__()}"
 
 def kin_to_long_count(num_kin):
+    if type(num_kin) is not int:
+        num_kin = int(num_kin)
     long_count = LongCount()
 
     long_count.baktun = num_kin // (18 * (20 ** 3))
