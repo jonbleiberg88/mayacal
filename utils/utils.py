@@ -5,6 +5,17 @@ import datetime
 class JulianDate:
 
     def __init__(self, day, month, year):
+        """Basic class to handle (proleptic) Julian calendar dates and conversions
+
+        Note that this class uses the astronomical year convention for years before 1 CE,
+        i.e. 1 BCE = 0, 2 BCE = -1, etc.
+
+        Args:
+            day (int): The day of the Julian calendar date
+            month (int): The month number of the Julian calendar date
+            year (int): The (astronomical) year number of the Julian calendar date
+        """
+
         self.day = day
         self.month = month
         self.year = year
@@ -38,10 +49,24 @@ class JulianDate:
         return D + (153 * M - 457) // 5 + 365 * Y + math.floor(Y / 4) + 1721116.5
 
     def to_gregorian(self, as_datetime=False):
+        """Converts the Julian calendar date to its Gregorian calendar equivalent
+
+        Returns:
+            (GregorianDate): The Gregorian calendar date corresponding to the
+                Julian calendar date.
+
+        """
         return julian_day_to_gregorian(round(self.to_julian_day()))
 
 
     def to_mayadate(self, correlation=584283):
+        """Converts the Julian calendar date to its Mayan calendar equivalent
+
+        Returns:
+            (Mayadate): The Mayan calendar date corresponding to the Gregorian
+                calendar date.
+
+        """
 
         from LongCount import LongCount, kin_to_long_count
         from Mayadate import Mayadate
@@ -64,22 +89,29 @@ class JulianDate:
 
 class GregorianDate:
     def __init__(self, day, month, year):
-        self.day = day
-        self.month = month
-        self.year = year
+        """Basic class to handle (proleptic) Gregorian calendar dates and conversions
 
-    def to_julian_day(self):
-        """Converts a (proleptic) Gregorian calendar date to its Julian Day number equivalent
-
-        Adapted from: https://www.researchgate.net/publication/316558298_Date_Algorithms#pf5
-
-        Note that this function requires the astronomical year for years before 1 CE,
+        Note that this class uses the astronomical year convention for years before 1 CE,
         i.e. 1 BCE = 0, 2 BCE = -1, etc.
 
         Args:
             day (int): The day of the Gregorian calendar date
             month (int): The month number of the Gregorian calendar date
-            year (int): The (astronomical) year of the Gregorian calendar date
+            year (int): The (astronomical) year number of the Gregorian calendar date
+        """
+
+        self.day = day
+        self.month = month
+        self.year = year
+
+    def to_julian_day(self):
+        """Converts the Gregorian calendar date to its Julian Day number equivalent
+
+        Adapted from: https://www.researchgate.net/publication/316558298_Date_Algorithms#pf5
+
+        Returns:
+            (float): The Julian day number corresponding to the Gregorian calendar
+                date.
 
         """
         if self.month < 3:
@@ -95,9 +127,23 @@ class GregorianDate:
             Y / 4) - math.floor(Y / 100) + math.floor(Y / 400) + 1721118.5
 
     def to_julian(self):
+        """Converts the Gregorian calendar date to its Julian calendar equivalent
+
+        Returns:
+            (JulianDate): The Julian calendar date corresponding to the Gregorian
+                calendar date.
+
+        """
         return julian_day_to_julian(round(self.to_julian_day))
 
     def to_mayadate(self, correlation=584283):
+        """Converts the Gregorian calendar date to its Mayan calendar equivalent
+
+        Returns:
+            (Mayadate): The Mayan calendar date corresponding to the Gregorian
+                calendar date.
+
+        """
         from LongCount import LongCount, kin_to_long_count
         from Mayadate import Mayadate
 
@@ -107,9 +153,18 @@ class GregorianDate:
         return Mayadate(long_count, None)
 
     def to_datetime(self):
+        """Converts the GregorianDate object to a datetime.date object
 
+        Note that datetime.date objects do not support years before 1 CE. Attempting
+        to convert GregorianDate objects with year before 1 CE will raise a ValueError.
+
+        Returns:
+            (datetime.date): The datetime.date object corresponding to the Gregorian
+                calendar date.
+
+        """
         if self.year < 1:
-            raise ValueError("Datetime date objects do not support years before 1 CE")
+            raise ValueError("datetime.date objects do not support years before 1 CE")
 
         return datetime.date(self.year, self.month, self.day)
 
@@ -228,26 +283,71 @@ def julian_day_to_gregorian(julian_day):
     return GregorianDate(day, month, year)
 
 def datetime_to_gregorian(date):
+    """Converts a datetime.date object to a GregorianDate object
+
+    Args:
+        date (datetime.date): The datetime.date object to convert
+
+    Returns:
+        (GregorianDate): The corresponding GregorianDate object
+
+    """
 
     return GregorianDate(date.day, date.month, date.year)
 
 def datetime_to_julian(date):
+    """Converts a datetime.date object to the corresponding Julian calendar date
+
+    Args:
+        date (datetime.date): The datetime.date object to convert
+
+    Returns:
+        (JulianDate): The corresponding Julian calendar date
+
+    """
 
     g = GregorianDate(date.day, date.month, date.year)
     return g.to_julian()
 
 def datetime_to_julian_day(date):
+    """Converts a datetime.date object to the corresponding Julian Day number
+
+    Args:
+        date (datetime.date): The datetime.date object to convert
+
+    Returns:
+        (float): The corresponding Julian Day number
+
+    """
 
     g = GregorianDate(date.day, date.month, date.year)
     return g.to_julian_day()
 
 def datetime_to_mayadate(date):
+    """Converts a datetime.date object to the corresponding Maya calendar date
+
+    Args:
+        date (datetime.date): The datetime.date object to convert
+
+    Returns:
+        (Mayadate): The corresponding Mayan calendar date.
+
+    """
 
     g = GregorianDate(date.day, date.month, date.year)
     return g.to_mayadate()
 
 
 def _num_to_month(num):
+    """Helper function to convert month number to short name
+
+    Args:
+        num (int): the month number to convert
+
+    Returns:
+        (str): The three letter short name of the corresponding month
+
+    """
 
     return {1 : 'Jan',
             2 : 'Feb',
