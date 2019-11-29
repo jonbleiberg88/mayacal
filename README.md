@@ -3,7 +3,7 @@ WORK IN PROGRESS - Implementation of some datetime features for Classical Maya c
 
 Requires Python 3.5+
 
-** Installation **
+**Installation**
 
 ```shell
 
