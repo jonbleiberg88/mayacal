@@ -19,11 +19,18 @@ class CalendarRound:
         return (self.tzolkin.has_missing() or self.haab.has_missing())
 
 
-    def add_days(self, num_days):
-        self.haab.add_days(num_days, True)
-        self.tzolkin.add_days(num_days, True)
+    def add_days(self, num_days, in_place=False):
+        if in_place:
+            self.haab.add_days(num_days, True)
+            self.tzolkin.add_days(num_days, True)
 
-        return self
+            return self
+
+        else:
+            new_haab = self.haab.add_days(num_days)
+            new_tzolkin = self.tzolkin.add_days(num_days)
+
+            return CalendarRound(new_tzolkin, new_haab)
 
 
     def __check_valid(self):

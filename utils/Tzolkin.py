@@ -93,12 +93,32 @@ class Tzolkin:
             return Tzolkin(tzolkin_num=new_num)
 
     def has_missing(self):
+        """ Checks whther the day number or name is missing
+
+        Returns:
+            (bool): True if either the day number or day name is None, False
+                otherwise
+
+        """
         if self.day_name is None or self.day_number is None:
             return True
 
         return False
 
     def match(self, date):
+        """Checks for a potential match with another Tzolkin object
+
+        A value of None is treated as matching any value, consistent with the use
+        of None to mark values for later inference.
+
+        Args:
+            date (Tzolkin): The tzolkin object to check for a match with
+
+        Returns:
+            (bool): True if the day name and number match, with None as an
+                automatic match. False otherwise.
+
+        """
         name_same = self.__fuzzy_eq(self.day_name, date.day_name)
         num_same = self.__fuzzy_eq(self.day_number, date.day_number)
 
@@ -109,6 +129,8 @@ class Tzolkin:
             return False
 
     def __fuzzy_eq(self, v1, v2):
+        """ Helper function for NoneType matching """
+
         if v1 == v2 or v1 is None or v2 is None:
             return True
 

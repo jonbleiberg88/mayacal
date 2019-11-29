@@ -62,6 +62,8 @@ class Mayadate:
     def to_gregorian(self, correlation=584283):
         return self.long_count.to_gregorian(correlation)
 
+    def get_total_kin(self):
+        return self.long_count.get_total_kin()
 
     def __add__(self, dist):
         lc = self.long_count + dist.long_count
@@ -73,6 +75,35 @@ class Mayadate:
 
         return lc.get_mayadate()
 
+    def __eq__(self, date):
+        if self.get_total_kin() == date.get_total_kin():
+            return True
+        else:
+            return False
+
+    def __gt__(self, date):
+        if self.get_total_kin() > date.get_total_kin():
+            return True
+        else:
+            return False
+
+    def __ge__(self, date):
+        if self.get_total_kin() >= date.get_total_kin():
+            return True
+        else:
+            return False
+
+    def __lt__(self, date):
+        if self.get_total_kin() < date.get_total_kin():
+            return True
+        else:
+            return False
+
+    def __le__(self, date):
+        if self.get_total_kin() <= date.get_total_kin():
+            return True
+        else:
+            return False
 
     def __repr__(self):
         return f"{self.long_count.__repr__()}  {self.calendar_round.__repr__()}"
@@ -91,7 +122,8 @@ class Mayadatedelta(Mayadate):
 
 
 
-
+def main():
+    pass
 
 if __name__ == "__main__":
-    print("hi")
+    main()
