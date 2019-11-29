@@ -3,8 +3,10 @@ WORK IN PROGRESS - Implementation of some datetime features for Classical Maya c
 
 Requires Python 3.5+
 
-Example Usage:
+**Example Usage:**
 
+
+Basic conversions and additions:
 ```python
 
 >>> lc = LongCount(9, 0, 0, 0, 0)
@@ -27,7 +29,19 @@ Nov 20, 448 CE
 
 ```
 
+Get all Long Count dates corresponding to a given Calendar Round:
+```python
 
+>>> cr = CalendarRound(Tzolkin(6, "Ok"), Haab(18, "Sak"))
+>>> min_lc = LongCount(9,0,0,0,0)
+>>> max_lc = LongCount(10,0,0,0,0)
+>>> cr.get_long_count_possibilities(min_lc, max_lc)
+[9.0.13.2.10, 9.3.5.15.10, 9.5.18.10.10, 9.8.11.5.10, 9.11.4.0.10, 9.13.16.13.10, 9.16.9.8.10, 9.19.2.3.10]
+
+
+```
+
+Find the distance between two Long Count dates
 ```python
 
 >>> lc_1 = LongCount(9, 12, 13, 0, 5)

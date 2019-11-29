@@ -131,7 +131,7 @@ class Haab:
         name_same = self.month_name == date.month_name
         num_same = self.month_number == date.month_number
 
-        if name_same and month_same:
+        if name_same and num_same:
             return True
         else:
             return False

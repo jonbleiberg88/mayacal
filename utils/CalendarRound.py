@@ -148,8 +148,8 @@ class CalendarRound:
         from LongCount import LongCount, kin_to_long_count
 
         min_cal_round = min_date.get_calendar_round()
-        init_num = tzolkin_day_to_num[(min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)]
-        day_num = tzolkin_day_to_num[(self.tzolkin.day_number, self.tzolkin.day_name)]
+        init_num = TZOLKIN_DAY_TO_NUM[(min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)]
+        day_num = TZOLKIN_DAY_TO_NUM[(self.tzolkin.day_number, self.tzolkin.day_name)]
 
         cycle_num = (day_num - init_num) % 260
 
