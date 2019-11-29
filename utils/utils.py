@@ -359,6 +359,7 @@ def datetime_to_mayadate(date):
     return g.to_mayadate()
 
 
+
 def _num_to_month(num):
     """Helper function to convert month number to short name
 

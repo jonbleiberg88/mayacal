@@ -328,6 +328,24 @@ class DistanceNumber(LongCount):
         """
         return  self.sign * super().get_total_kin()
 
+    def to_approx_years(self, pretty_print=False):
+        total_kin = abs(self.get_total_kin())
+
+        years = int(total_kin // 365.25)
+        total_kin -= years * 365.25
+
+        months = int(total_kin  // 30.44) #average month length
+        total_kin -= months * 30.44
+
+        if not pretty_print:
+            return self.sign * years, self.sign * months, self.sign * round(total_kin)
+
+        if self.sign == 1:
+            return f"{years} years, {months} months, {round(total_kin)} days"
+        else:
+            return f"-{years} years, -{months} months, -{round(total_kin)} days"
+
+
 
     def __repr__(self):
         if self.sign == 1:

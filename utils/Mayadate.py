@@ -7,22 +7,32 @@ class Mayadate:
     Attributes:
         long_count (LongCount): The Long Count representation of the date
         calendar_round (CalendarRound): The Calendar Round position of the date
+        glyph_g (str): The Glyph G associated with the date
 
     """
 
-    def __init__(self, long_count=None, calendar_round=None):
+    def __init__(self, long_count=None, calendar_round=None, glyph_g=None):
         """Creates a new Mayadate object
 
         Args:
             long_count (LongCount): The Long Count representation of the date
             calendar_round (CalendarRound): The Calendar Round position of the
                 date
+            glyph_g (str): The Glyph G associated with the date, e.g. "G3"
 
         """
         if long_count is None:
             self.LongCount = LongCount(None, None, None, None, None)
         else:
             self.long_count = long_count
+            if long_count.winal is not None and long_count.kin is not None:
+                g = self.long_count.get_glyph_g()
+                if g != glyph_g and glyph_g is not None:
+                    raise ValueError("Provided Glyph G does not match the Long Count date")
+                self.glyph_g = g
+
+            else:
+                self.glyph_g = glyph_g
 
         if calendar_round is None:
             if not self.long_count.has_missing():
@@ -73,8 +83,12 @@ class Mayadate:
                 portions of the Long Count and Calendar Round Dates
 
         """
+        poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
 
-        return self.__infer_lc_recursive(self.long_count.to_list(), [])
+        if poss_lc == []:
+            print("No matching dates found - check the inputted values")
+
+        return poss_lc
 
     def infer_mayadates(self):
         """Finds Maya calendar dates that match the supplied information
@@ -86,14 +100,21 @@ class Mayadate:
         """
 
         lcs = self.infer_long_count_dates()
+        if lcs == []:
+            print("No matching dates found - check the inputted values")
         return [lc.get_mayadate() for lc in lcs]
 
     def __infer_lc_recursive(self, lc, poss_dates):
         """ Helper function to recursively check for possible dates """
 
         if None not in lc:
-            if self.calendar_round.match(LongCount(*lc).get_calendar_round()):
-                return LongCount(*lc)
+            lc_obj = LongCount(*lc)
+            if self.calendar_round.match(lc_obj.get_calendar_round()):
+                if self.glyph_g is not None:
+                    if lc_obj.get_glyph_g() == self.glyph_g:
+                        return lc_obj
+                else:
+                    return lc_obj
             return
 
         max_vals = [13,20,20,18,20]
@@ -102,11 +123,14 @@ class Mayadate:
             val, max = v
             if val is None:
                 for i in range(max):
+
                     lc_test = lc[:]
                     lc_test[idx] = i
+                    
                     res = self.__infer_lc_recursive(lc_test, poss_dates)
                     if type(res) is LongCount:
                         poss_dates.append(res)
+                break
 
         return poss_dates
 

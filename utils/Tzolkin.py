@@ -47,16 +47,18 @@ class Tzolkin:
 
             self.reset_by_tzolkin_num(tzolkin_num)
 
+
         else:
-            if day_name not in TZOLKIN_DAYS:
+            if day_name not in TZOLKIN_DAYS and day_name is not None:
                 raise ValueError(f"Invalid tzolkin day name {day_name}")
             self.day_name = day_name
 
-            if day_number not in list(range(1, 13)):
+            if day_number not in list(range(1, 13)) and day_number is not None:
                 raise ValueError("Invalid tzolkin day number - must be integer between 1 and 13")
             self.day_number = day_number
 
-            self.tzolkin_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
+            if day_number is not None and day_name is not None:
+                self.tzolkin_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
 
     def reset_by_tzolkin_num(self, new_num):
         """ Set the Tzolkin object to a new position by its 260 day count number
