@@ -1,5 +1,7 @@
-from Haab import *
-from Tzolkin import *
+from .haab import *
+from .tzolkin import *
+
+__all__ =['CalendarRound']
 
 class CalendarRound:
     """Represents a position in the Mayan Calendar Round.
@@ -145,7 +147,7 @@ class CalendarRound:
             (list): A list of LongCount objects representing the possible dates
 
         """
-        from LongCount import LongCount, kin_to_long_count
+        from .long_count import LongCount, kin_to_long_count
 
         min_cal_round = min_date.get_calendar_round()
         init_num = TZOLKIN_DAY_TO_NUM[(min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)]

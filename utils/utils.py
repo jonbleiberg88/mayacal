@@ -78,8 +78,8 @@ class JulianDate:
 
         """
 
-        from LongCount import LongCount, kin_to_long_count
-        from Mayadate import Mayadate
+        from .long_count import LongCount, kin_to_long_count
+        from .mayadate import Mayadate
 
         num_kin = round(self.to_julian_day()) - correlation
         long_count = kin_to_long_count(num_kin)
@@ -165,8 +165,8 @@ class GregorianDate:
                 calendar date.
 
         """
-        from LongCount import LongCount, kin_to_long_count
-        from Mayadate import Mayadate
+        from .long_count import LongCount, kin_to_long_count
+        from .mayadate import Mayadate
 
         num_kin = round(self.to_julian_day()) - correlation
         long_count = kin_to_long_count(num_kin)

@@ -1,5 +1,7 @@
-from CalendarRound import *
-from utils import julian_day_to_gregorian, julian_day_to_julian
+from .calendar_round import *
+from .utils import julian_day_to_gregorian, julian_day_to_julian
+
+__all__ = ['LongCount', 'DistanceNumber', 'kin_to_long_count']
 
 class LongCount:
     """Represents a position in the Maya Long Count
@@ -99,7 +101,7 @@ class LongCount:
             (Mayadate): The Long Count with its associated Calendar Round position
 
         """
-        from Mayadate import Mayadate
+        from .mayadate import Mayadate
 
         if self.has_missing():
             return Mayadate(self, None)

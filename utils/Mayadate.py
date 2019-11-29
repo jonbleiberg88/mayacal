@@ -1,5 +1,7 @@
-from CalendarRound import *
-from LongCount import *
+from .calendar_round import *
+from .long_count import *
+
+__all__ = ["Mayadate"]
 
 class Mayadate:
     """ Umbrella class to handle Maya calendar dates, conversions, and inference
@@ -35,10 +37,11 @@ class Mayadate:
                 self.glyph_g = glyph_g
 
         if calendar_round is None:
-            if not self.long_count.has_missing():
-                self.calendar_round = self.long_count.get_calendar_round()
-            else:
-                self.calendar_round = CalendarRound(None, None)
+            if long_count is not None:
+                if not self.long_count.has_missing():
+                    self.calendar_round = self.long_count.get_calendar_round()
+                else:
+                    self.calendar_round = CalendarRound(None, None)
         else:
             self.calendar_round = calendar_round
 
@@ -83,6 +86,10 @@ class Mayadate:
                 portions of the Long Count and Calendar Round Dates
 
         """
+
+        if not self.long_count.has_missing():
+            return [self.long_count]
+
         poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
 
         if poss_lc == []:
@@ -98,6 +105,8 @@ class Mayadate:
                 portions of the Long Count and Calendar Round Dates
 
         """
+        if not self.long_count.has_missing():
+            return [self.long_count.get_mayadate()]
 
         lcs = self.infer_long_count_dates()
         if lcs == []:
@@ -126,7 +135,7 @@ class Mayadate:
 
                     lc_test = lc[:]
                     lc_test[idx] = i
-                    
+
                     res = self.__infer_lc_recursive(lc_test, poss_dates)
                     if type(res) is LongCount:
                         poss_dates.append(res)

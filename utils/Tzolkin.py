@@ -1,4 +1,5 @@
 
+__all__ = ['Tzolkin', 'TZOLKIN_DAYS']
 # Module level constants
 TZOLKIN_DAYS = ["Imix", "Ik", "Akbal", "Kan", "Chikchan", "Kimi", "Manik",
                     "Lamat", "Muluk", "Ok", "Chuwen", "Eb", "Ben", "Ix",
@@ -8,9 +9,10 @@ TZOLKIN_IDX_TO_DAY = {idx:day for idx, day in enumerate(TZOLKIN_DAYS)}
 TZOLKIN_DAY_TO_IDX = {day:idx for idx, day in TZOLKIN_IDX_TO_DAY.items()}
 
 TZOLKIN_NUM_TO_DAY = {}
-for i in range(260):
-    date = ((i % 13) + 1, TZOLKIN_IDX_TO_DAY[(i % 20)])
-    TZOLKIN_NUM_TO_DAY[i] = date
+
+for _i in range(260):
+    _date = ((_i % 13) + 1, TZOLKIN_IDX_TO_DAY[(_i % 20)])
+    TZOLKIN_NUM_TO_DAY[_i] = _date
 
 TZOLKIN_DAY_TO_NUM = {date:num for num, date in TZOLKIN_NUM_TO_DAY.items()}
 
