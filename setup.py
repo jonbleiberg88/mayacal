@@ -8,7 +8,7 @@ setup(
   description = 'Basic calendar functions for the classical Mayan calendar',
   author = 'Jon Bleiberg',
   url = 'https://github.com/jonbleiberg88/mayacal',
-  download_url = 'https://github.com/jonbleiberg88/mayacal/archive/v0.1.tar.gz',
+  download_url = 'https://github.com/jonbleiberg88/mayacal/archive/v0.1-alpha.tar.gz',
   keywords = ['Maya', 'Mayan', 'Calendar', 'Classical', 'Ancient'],
   install_requires=[],
   classifiers=[
