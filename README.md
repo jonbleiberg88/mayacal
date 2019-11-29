@@ -9,8 +9,21 @@ Example Usage:
 
 >>> lc = LongCount(9, 0, 0, 0, 0)
 >>> lc.get_calendar_round()
-
 8 Ajaw 13 Keh
+
+>>> dist = DistanceNumber(LongCount(0, 0, 13, 2, 10), sign=1)
+>>> new_lc = lc + dist
+>>> new_lc
+9.0.13.2.10
+
+>>> new_lc.get_mayadate()
+9.0.13.2.10  6 Ok 18 Sak
+
+>>> print(new_lc.to_julian())
+Nov 19, 448 CE
+
+>>> print(new_lc.to_gregorian())
+Nov 20, 448 CE
 
 ```
 
