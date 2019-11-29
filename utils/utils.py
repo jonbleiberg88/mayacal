@@ -3,9 +3,19 @@ import datetime
 
 
 class JulianDate:
+    """Basic class to handle (proleptic) Julian calendar dates and conversions
+
+    Note that this class uses the astronomical year convention for years before 1 CE,
+    i.e. 1 BCE = 0, 2 BCE = -1, etc.
+
+    Attributes:
+        day (int): The day of the Julian calendar date
+        month (int): The month number of the Julian calendar date
+        year (int): The (astronomical) year number of the Julian calendar date
+    """
 
     def __init__(self, day, month, year):
-        """Basic class to handle (proleptic) Julian calendar dates and conversions
+        """Creates a new JulianDate object
 
         Note that this class uses the astronomical year convention for years before 1 CE,
         i.e. 1 BCE = 0, 2 BCE = -1, etc.
@@ -88,8 +98,19 @@ class JulianDate:
 
 
 class GregorianDate:
+    """Basic class to handle (proleptic) Gregorian calendar dates and conversions
+
+    Note that this class uses the astronomical year convention for years before 1 CE,
+    i.e. 1 BCE = 0, 2 BCE = -1, etc.
+
+    Attributes:
+        day (int): The day of the Gregorian calendar date
+        month (int): The month number of the Gregorian calendar date
+        year (int): The (astronomical) year number of the Gregorian calendar date
+    """
+
     def __init__(self, day, month, year):
-        """Basic class to handle (proleptic) Gregorian calendar dates and conversions
+        """Creates a new GregorianDate object
 
         Note that this class uses the astronomical year convention for years before 1 CE,
         i.e. 1 BCE = 0, 2 BCE = -1, etc.

@@ -1,17 +1,19 @@
 
-tzolkin_days = ["Imix", "Ik", "Akbal", "Kan", "Chikchan", "Kimi", "Manik",
+# Module level constants
+TZOLKIN_DAYS = ["Imix", "Ik", "Akbal", "Kan", "Chikchan", "Kimi", "Manik",
                     "Lamat", "Muluk", "Ok", "Chuwen", "Eb", "Ben", "Ix",
                     "Men", "Kib", "Kaban", "Etznab", "Kawak", "Ajaw"]
 
-tzolkin_idx_to_day = {idx:day for idx, day in enumerate(tzolkin_days)}
-tzolkin_day_to_idx = {day:idx for idx, day in tzolkin_idx_to_day.items()}
+TZOLKIN_IDX_TO_DAY = {idx:day for idx, day in enumerate(TZOLKIN_DAYS)}
+TZOLKIN_DAY_TO_IDX = {day:idx for idx, day in TZOLKIN_IDX_TO_DAY.items()}
 
-tzolkin_num_to_day = {}
+TZOLKIN_NUM_TO_DAY = {}
 for i in range(260):
-    date = ((i % 13) + 1, tzolkin_idx_to_day[(i % 20)])
-    tzolkin_num_to_day[i] = date
+    date = ((i % 13) + 1, TZOLKIN_IDX_TO_DAY[(i % 20)])
+    TZOLKIN_NUM_TO_DAY[i] = date
 
-tzolkin_day_to_num = {date:num for num, date in tzolkin_num_to_day.items()}
+TZOLKIN_DAY_TO_NUM = {date:num for num, date in TZOLKIN_NUM_TO_DAY.items()}
+
 
 class Tzolkin:
     """Represents a day number, day name combination in the 260 day count
@@ -39,14 +41,14 @@ class Tzolkin:
         if tzolkin_num is not None:
             # check if day name/number matches tzolkin number if provided
             if day_number is not None and day_name is not None:
-                implied_num = tzolkin_day_to_num[(day_number, day_name)]
+                implied_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
                 if implied_num != tzolkin_num:
                     raise ValueError(f"Provided Tzolkin number {tzolkin_num} does not match provided day name and number {day_number} {day_name}")
 
             self.reset_by_tzolkin_num(tzolkin_num)
 
         else:
-            if day_name not in tzolkin_days:
+            if day_name not in TZOLKIN_DAYS:
                 raise ValueError(f"Invalid tzolkin day name {day_name}")
             self.day_name = day_name
 
@@ -54,7 +56,7 @@ class Tzolkin:
                 raise ValueError("Invalid tzolkin day number - must be integer between 1 and 13")
             self.day_number = day_number
 
-            self.tzolkin_num = tzolkin_day_to_num[(day_number, day_name)]
+            self.tzolkin_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
 
     def reset_by_tzolkin_num(self, new_num):
         """ Set the Tzolkin object to a new position by its 260 day count number
@@ -71,15 +73,16 @@ class Tzolkin:
             raise ValueError("Invalid Tzolkin number, must be between 0 and 259")
 
         self.tzolkin_num = new_num
-        self.day_number, self.day_name = tzolkin_num_to_day[self.tzolkin_num]
+        self.day_number, self.day_name = TZOLKIN_NUM_TO_DAY[self.tzolkin_num]
 
     def add_days(self, num_days, in_place=False):
         """ Adds days to the current Tzolkin object
 
         Args:
             num_days (int): Number of days to add to the Tzolkin object
-            in_place (bool): Whther to modify the existing object or return a
+            in_place (bool): Whether to modify the existing object or return a
                 new object. Defaults to False.
+
         Returns:
             A new Tzolkin object num_days ahead of the previous object
 
@@ -93,7 +96,7 @@ class Tzolkin:
             return Tzolkin(tzolkin_num=new_num)
 
     def has_missing(self):
-        """ Checks whther the day number or name is missing
+        """ Checks whether the day number or name is missing
 
         Returns:
             (bool): True if either the day number or day name is None, False
@@ -112,7 +115,7 @@ class Tzolkin:
         of None to mark values for later inference.
 
         Args:
-            date (Tzolkin): The tzolkin object to check for a match with
+            date (Tzolkin): The Tzolkin object to check for a match with
 
         Returns:
             (bool): True if the day name and number match, with None as an

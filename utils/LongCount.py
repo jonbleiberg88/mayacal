@@ -2,11 +2,29 @@ from CalendarRound import *
 from utils import julian_day_to_gregorian, julian_day_to_julian
 
 class LongCount:
-    def __init__(self, baktun=0, katun=0, tun=0, winal=0, kin=0):
-        """Represents a position in the Maya Long Count
+    """Represents a position in the Maya Long Count
 
-        Valid for dates from 0.0.0.0.0 to 19.19.19.17.19. Use NoneType to mark
-        missing positions in the date for later inference.
+    Valid for dates from 0.0.0.0.0 to 19.19.19.17.19. Use NoneType to mark
+    missing positions in the date for later inference.
+
+    Attributes:
+        baktun (int or NoneType): The Bak'tun number of the Long Count date.
+            Integer between 0 and 19 or None.
+        katun (int or NoneType): The K'atun number of the Long Count date.
+            Integer between 0 and 19 or None.
+        tun (int or NoneType): The Tun number of the Long Count date.
+            Integer between 0 and 19 or None.
+        winal (int or NoneType): The Winal number of the Long Count date.
+            Integer between 0 and 17 or None.
+        kin (int or NoneType): The Kin number of the Long Count date.
+            Integer between 0 and 19 or None.
+
+    """
+
+    def __init__(self, baktun=0, katun=0, tun=0, winal=0, kin=0):
+        """Creates a new LongCount object
+
+        Use NoneType to mark missing positions in the date for later inference.
 
         Args:
             baktun (int or NoneType): The Bak'tun number of the Long Count date.
@@ -98,7 +116,7 @@ class LongCount:
                 return a new LongCount object. Defaults to False.
 
         Returns:
-            (LongCount): The LongCOunt object num_days ahead of the current LongCount
+            (LongCount): The LongCount object num_days ahead of the current LongCount
                 object's date.
 
         """
@@ -275,8 +293,17 @@ class LongCount:
         return f"{self.baktun}.{self.katun}.{self.tun}.{self.winal}.{self.kin}"
 
 class DistanceNumber(LongCount):
+    """ Represents a signed Distance Number in Long Count units
+
+
+    Attributes:
+        long_count (LongCount): The Distance Number in Long Count units
+        sign (int): 1 for a positive number, -1 for a negative number
+
+    """
+
     def __init__(self, long_count=LongCount(), sign=1):
-        """ Represents a signed Distance Number in Long Count units
+        """Creates a new DistanceNumber object
 
 
         Args:

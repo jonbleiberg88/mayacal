@@ -2,7 +2,36 @@ from Haab import *
 from Tzolkin import *
 
 class CalendarRound:
-    def __init__(self, tzolkin=None, haab=None):
+    """Represents a position in the Mayan Calendar Round.
+
+    Supports use of NoneType to mark positions for later inference.
+
+    Attributes:
+        tzolkin (Tzolkin): The tzolkin date portion of the the Calendar Round position
+        haab (Haab): The haab date portion of the the Calendar Round position
+        valid (bool): Whether the Tzolkin day name matches the Haab month number
+
+    """
+    def __init__(self, tzolkin=None, haab=None, override_coef_check=False):
+        """ Creates a new CalendarRound object
+
+        Supports use of NoneType to mark positions for later inference.
+
+        Note that each Tzolkin day name can only occur with a specific set of Haab
+        month coefficients. Throws a ValueError if these rules are violated. Can
+        override these rules (for example for work with Post Classic dates) by
+        setting override_coef_check to True.
+
+        Args:
+            tzolkin (Tzolkin or NoneType): The tzolkin date portion of the the
+                Calendar Round position. Use None to denote missing Tzolkin date.
+            haab (Haab or NoneType): The haab date portion of the the Calendar
+                Round position. Use None to denote missing Haab date.
+            override_coef_check (bool): Whether to override the check for valid
+                month number, day name combinations. Defaults to False.
+
+        """
+
         if tzolkin is None:
             self.tzolkin = Tzolkin(None, None)
         else:
@@ -13,13 +42,37 @@ class CalendarRound:
         else:
             self.haab = haab
 
-        self.__check_valid()
+        self.valid = self.__check_valid()
+
+        if not override_coef_check and not self.valid:
+            raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+
 
     def has_missing(self):
+        """Checks whether the Calendar Round has any missing components
+
+        Returns:
+            (bool): True if the Tzolkin or Haab contain missing components.
+                False otherwise.
+
+        """
+
         return (self.tzolkin.has_missing() or self.haab.has_missing())
 
 
     def add_days(self, num_days, in_place=False):
+        """Adds num_days days (kin) to the current CalendarRound object
+
+        Args:
+            num_days (int): The number of days to add
+            in_place (bool): If True, modify the existing CalendarRound object,
+                else return a new CalendarRound object. Defaults to False.
+
+        Returns:
+            (CalendarRound): The CalendarRound object num_days ahead of the current
+                CalendarRound object's date.
+
+        """
         if in_place:
             self.haab.add_days(num_days, True)
             self.tzolkin.add_days(num_days, True)
@@ -34,35 +87,66 @@ class CalendarRound:
 
 
     def __check_valid(self):
+        """Checks whether the Tzolkin day name can occur with the Haab month number
+
+        Returns:
+            (bool): True if the Tzolkin day name can occur with the Haab month
+                number. False otherwise.
+
+        """
+
         if self.haab.month_number is None or self.tzolkin.day_name is None:
-            return
+            return True
 
         if self.haab.month_number % 5 == 0:
             if self.tzolkin.day_name not in ("Kaban", "Ik", "Manik", "Eb"):
-                raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+                return False
+
+            return True
 
         elif self.haab.month_number % 5 == 1:
             if self.tzolkin.day_name not in ("Etznab", "Akbal", "Lamat", "Ben"):
-                raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+                return False
+            return True
 
         elif self.haab.month_number % 5 == 2:
             if self.tzolkin.day_name not in ("Kawak", "Kan", "Muluk", "Ix"):
-                raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+                return False
+            return True
 
         elif self.haab.month_number % 5 == 3:
             if self.tzolkin.day_name not in ("Ajaw", "Chikchan", "Ok", "Men"):
-                raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+                return False
+            return True
 
         elif self.haab.month_number % 5 == 4:
             if self.tzolkin.day_name not in ("Imix", "Kimi", "Chuwen", "Kib"):
-                raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
+                return False
+            return True
+
 
         else:
             raise ValueError(f"Invalid month coefficient {self.haab.month_number}")
 
 
     def get_long_count_possibilities(self, min_date, max_date):
+        """Finds Long Count dates that correspond to the Calendar Round date
+
+        Finds all Long Count dates that correspond to the Calendar Round date
+        between min_date and max_date. Note that the Calendar Round cycle repeats
+        every 18,980 days, i.e. the LCM of the 260 day Tzolkin cycle and the 365
+        day Haab cycle.
+
+        Args:
+            min_date (LongCount): The earliest Long Count date to check
+            max_date (LongCount): The latest Long Count date to check
+
+        Returns:
+            (list): A list of LongCount objects representing the possible dates
+
+        """
         from LongCount import LongCount, kin_to_long_count
+
         min_cal_round = min_date.get_calendar_round()
         init_num = tzolkin_day_to_num[(min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)]
         day_num = tzolkin_day_to_num[(self.tzolkin.day_number, self.tzolkin.day_name)]
@@ -90,6 +174,20 @@ class CalendarRound:
 
 
     def match(self, date):
+        """Checks for a potential match with another CalendarRound object
+
+        A value of None is treated as matching any value, consistent with the use
+        of None to mark values for later inference.
+
+        Args:
+            date (CalendarRound): The CalendarRound object to check for a match with
+
+        Returns:
+            (bool): True if the Tzolkin and Haab match, with None as an
+                automatic match. False otherwise.
+
+        """
+
         if self.tzolkin.match(date.tzolkin) and self.haab.match(date.haab):
             return True
 
@@ -101,7 +199,6 @@ class CalendarRound:
             return True
         else:
             return False
-
 
 
     def __repr__(self):
