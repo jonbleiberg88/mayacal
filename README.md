@@ -3,17 +3,32 @@ WORK IN PROGRESS - Implementation of some datetime features for Classical Maya c
 
 Requires Python 3.5+
 
+** Installation **
+
+```shell
+
+pip install mayacal
+
+```
+
 **Example Usage:**
 
+Import:
+
+``` python
+
+>>> import mayacal as mc
+
+```
 
 Basic conversions and additions:
 ```python
 
->>> lc = LongCount(9, 0, 0, 0, 0)
+>>> lc = mc.LongCount(9, 0, 0, 0, 0)
 >>> lc.get_calendar_round()
 8 Ajaw 13 Keh
 
->>> dist = DistanceNumber(LongCount(0, 0, 13, 2, 10), sign=1)
+>>> dist = mc.DistanceNumber(mc.LongCount(0, 0, 13, 2, 10), sign=1)
 >>> new_lc = lc + dist
 >>> new_lc
 9.0.13.2.10
@@ -31,7 +46,6 @@ Nov 20, 448 CE
 
 Get all Long Count dates corresponding to a given Calendar Round:
 ```python
->>> import mayacal as mc
 
 >>> cr = mc.CalendarRound(mc.Tzolkin(6, "Ok"), mc.Haab(18, "Sak"))
 >>> min_lc = mc.LongCount(9,0,0,0,0)
