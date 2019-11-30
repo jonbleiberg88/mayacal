@@ -86,7 +86,7 @@ Infer missing date components:
 ```python
 
 >>> lc = mc.LongCount(9,None,None,None,None)
->>> cr = mc.CalendarRound(Tzolkin(4, "Ajaw"), Haab(8, "Kumku"))
+>>> cr = mc.CalendarRound(mc.Tzolkin(4, "Ajaw"), mc.Haab(8, "Kumku"))
 >>> date = mc.Mayadate(lc, cr, glyph_g='G3')
 >>> date.infer_mayadates()
 [9.1.17.15.0  4 Ajaw 8 Kumku]
@@ -96,7 +96,7 @@ Infer missing date components:
 ```python
 
 >>> lc = mc.LongCount(10,None,8,10,None)
->>> cr = mc.CalendarRound(Tzolkin(4, "Ajaw"), haab=None)
+>>> cr = mc.CalendarRound(mc.Tzolkin(4, "Ajaw"), haab=None)
 >>> date = mc.Mayadate(lc, cr)
 >>> date.infer_long_count_dates()
 [10.1.8.10.0, 10.14.8.10.0]

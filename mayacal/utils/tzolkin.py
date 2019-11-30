@@ -1,5 +1,6 @@
 
-__all__ = ['Tzolkin', 'TZOLKIN_DAYS']
+__all__ = ['Tzolkin', 'TZOLKIN_DAYS', 'TZOLKIN_DAY_TO_NUM', 'TZOLKIN_IDX_TO_DAY',
+'TZOLKIN_NUM_TO_DAY', 'TZOLKIN_DAY_TO_IDX']
 # Module level constants
 TZOLKIN_DAYS = ["Imix", "Ik", "Akbal", "Kan", "Chikchan", "Kimi", "Manik",
                     "Lamat", "Muluk", "Ok", "Chuwen", "Eb", "Ben", "Ix",

@@ -1,6 +1,6 @@
 
 
-__all__ = ['Haab', 'HAAB_MONTHS']
+__all__ = ['Haab', 'HAAB_MONTHS', 'HAAB_IDX_TO_MONTH', 'HAAB_MONTH_TO_IDX']
 # Module level constants
 HAAB_MONTHS = ["Pop", "Wo", "Sip", "Sotz", "Sek", "Xul", "Yaxkin", "Mol", "Chen",
                 "Yax", "Sak", "Keh", "Mak", "Kankin", "Muwan", "Pax", "Kayab",
