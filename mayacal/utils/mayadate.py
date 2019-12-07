@@ -3,6 +3,7 @@ from .long_count import LongCount
 from .tzolkin import Tzolkin
 from .haab import Haab
 from .utils import *
+import logging
 
 __all__ = ["Mayadate", "from_dict"]
 
@@ -81,7 +82,7 @@ class Mayadate:
             return Mayadate(self.long_count.add_days(num_days),
                 self.calendar_round.add_days(num_days))
 
-    def infer_long_count_dates(self, min_lc=None, max_lc=None):
+    def infer_long_count_dates(self):
         """Finds Long Count dates that match the supplied information
 
         Returns:
@@ -96,11 +97,11 @@ class Mayadate:
         poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
 
         if poss_lc == []:
-            print("No matching dates found - check the inputted values")
+            logging.info("No matching dates found - check the inputted values")
 
         return poss_lc
 
-    def infer_mayadates(self, min_lc=None, max_lc=None):
+    def infer_mayadates(self):
         """Finds Maya calendar dates that match the supplied information
 
         Returns:
@@ -113,10 +114,10 @@ class Mayadate:
 
         lcs = self.infer_long_count_dates()
         if lcs == []:
-            print("No matching dates found - check the inputted values")
+            logging.info("No matching dates found - check the inputted values")
         return [lc.get_mayadate() for lc in lcs]
 
-    def __infer_lc_recursive(self, lc, poss_dates, min_lc=None, max_lc=None):
+    def __infer_lc_recursive(self, lc, poss_dates):
         """ Helper function to recursively check for possible dates """
 
         if None not in lc:
@@ -129,9 +130,7 @@ class Mayadate:
                     return lc_obj
             return
 
-        max_vals = [13,20,20,18,20]
-        min_vals = [0,0,0,0,0]
-
+        max_vals = [14,20,20,18,20]
 
         for idx, v in enumerate(zip(lc, max_vals)):
             val, max = v
@@ -217,6 +216,30 @@ class Mayadate:
     def to_dict(self):
         """Returns a JSON style dictionary representation
 
+        Output dictionary will be in format:
+        {
+            'long_count' : {
+                'baktun' : 9,
+                'katun' : 0,
+                'tun' : 0,
+                'winal' : 0,
+                'kin' : 0
+            },
+
+            'calendar_round' : {
+                'tzolkin' : {
+                    'day_number' : 8,
+                    'day_name' : "Ajaw"
+                },
+                'haab' : {
+                    'month_number' : 13,
+                    'month_name' : "Keh"
+                }
+            },
+            'glyph_g' : 'G9'
+        }
+        Missing values will be replaced with None.
+
         Returns:
             (dict): Dictionary representation of the object ready for conversion
                 to JSON
@@ -273,6 +296,39 @@ class Mayadate:
         return f"{self.long_count.__repr__()}  {self.calendar_round.__repr__()}"
 
 def from_dict(dict_obj):
+    """ Converts dictionary to Mayadate object
+
+    Mainly intended for use with JSON objects.
+    Dictionary must be in format:
+        {
+            'long_count' : {
+                'baktun' : 9,
+                'katun' : 0,
+                'tun' : 0,
+                'winal' : 0,
+                'kin' : 0
+            },
+
+            'calendar_round' : {
+                'tzolkin' : {
+                    'day_number' : 8,
+                    'day_name' : "Ajaw"
+                },
+                'haab' : {
+                    'month_number' : 13,
+                    'month_name' : "Keh"
+                }
+            },
+            'glyph_g' : 'G9'
+        }
+    Missing values should be replaced with None.
+
+    Args:
+        dict_obj (dict): Dictionary in above format to convert
+
+    Returns:
+        (Mayadate): the corresponding Mayadate object
+    """
     lc_dict = _none_to_dict(dict_obj.get('long_count', {}))
 
     cr_dict = _none_to_dict(dict_obj.get('calendar_round', {}))
@@ -280,10 +336,7 @@ def from_dict(dict_obj):
     tz_dict = _none_to_dict(cr_dict.get('tzolkin', {}))
     hb_dict = _none_to_dict(cr_dict.get('haab', {}))
 
-
     glyph_g = dict_obj.get('glyph_g')
-
-
 
     return Mayadate(long_count= LongCount(**lc_dict),
         calendar_round=CalendarRound(Tzolkin(**tz_dict), Haab(**hb_dict)),

@@ -314,6 +314,9 @@ class LongCount:
     def __iter__(self):
         return iter(self.to_list())
 
+    def __getitem__(self, key):
+        return self.to_list().__getitem__(key)
+
     def __repr__(self):
         return f"{self.baktun}.{self.katun}.{self.tun}.{self.winal}.{self.kin}"
 
