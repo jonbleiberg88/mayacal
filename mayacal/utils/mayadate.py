@@ -1,10 +1,10 @@
-from .calendar_round import *
-from .long_count import *
-from .tzolkin import *
-from .haab import *
+from .calendar_round import CalendarRound
+from .long_count import LongCount
+from .tzolkin import Tzolkin
+from .haab import Haab
 from .utils import *
 
-__all__ = ["Mayadate"]
+__all__ = ["Mayadate", "from_dict"]
 
 class Mayadate:
     """ Umbrella class to handle Maya calendar dates, conversions, and inference
@@ -81,7 +81,7 @@ class Mayadate:
             return Mayadate(self.long_count.add_days(num_days),
                 self.calendar_round.add_days(num_days))
 
-    def infer_long_count_dates(self):
+    def infer_long_count_dates(self, min_lc=None, max_lc=None):
         """Finds Long Count dates that match the supplied information
 
         Returns:
@@ -100,7 +100,7 @@ class Mayadate:
 
         return poss_lc
 
-    def infer_mayadates(self):
+    def infer_mayadates(self, min_lc=None, max_lc=None):
         """Finds Maya calendar dates that match the supplied information
 
         Returns:
@@ -116,7 +116,7 @@ class Mayadate:
             print("No matching dates found - check the inputted values")
         return [lc.get_mayadate() for lc in lcs]
 
-    def __infer_lc_recursive(self, lc, poss_dates):
+    def __infer_lc_recursive(self, lc, poss_dates, min_lc=None, max_lc=None):
         """ Helper function to recursively check for possible dates """
 
         if None not in lc:
@@ -130,6 +130,8 @@ class Mayadate:
             return
 
         max_vals = [13,20,20,18,20]
+        min_vals = [0,0,0,0,0]
+
 
         for idx, v in enumerate(zip(lc, max_vals)):
             val, max = v
@@ -271,11 +273,30 @@ class Mayadate:
         return f"{self.long_count.__repr__()}  {self.calendar_round.__repr__()}"
 
 def from_dict(dict_obj):
-    lc_dict = dict_obj.get('long_count')
-    cr_dict = dict_obj.get('calendar_round')
+    lc_dict = _none_to_dict(dict_obj.get('long_count', {}))
+
+    cr_dict = _none_to_dict(dict_obj.get('calendar_round', {}))
+
+    tz_dict = _none_to_dict(cr_dict.get('tzolkin', {}))
+    hb_dict = _none_to_dict(cr_dict.get('haab', {}))
+
+
     glyph_g = dict_obj.get('glyph_g')
 
-    return Mayadate(long_count=**lc_dict, calendar_round=**cr_dict, glyph_g)
+
+
+    return Mayadate(long_count= LongCount(**lc_dict),
+        calendar_round=CalendarRound(Tzolkin(**tz_dict), Haab(**hb_dict)),
+        glyph_g=glyph_g)
+
+
+def _none_to_dict(obj):
+    if type(obj) is dict:
+        return obj
+    elif obj is None:
+        return {}
+    else:
+        raise ValueError("Dictionary not properly formatted - see documentation")
 
 def main():
     pass

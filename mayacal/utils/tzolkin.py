@@ -145,8 +145,8 @@ class Tzolkin:
 
         """
         return {
-            'num' : self.day_number
-            'name' : self.day_name
+            'day_number' : self.day_number,
+            'day_name' : self.day_name
         }
 
     def __fuzzy_eq(self, v1, v2):

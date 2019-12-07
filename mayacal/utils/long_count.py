@@ -27,7 +27,7 @@ class LongCount:
 
     """
 
-    def __init__(self, baktun=0, katun=0, tun=0, winal=0, kin=0):
+    def __init__(self, baktun=None, katun=None, tun=None, winal=None, kin=None):
         """Creates a new LongCount object
 
         Use NoneType to mark missing positions in the date for later inference.
@@ -310,6 +310,9 @@ class LongCount:
             return True
         else:
             return False
+
+    def __iter__(self):
+        return iter(self.to_list())
 
     def __repr__(self):
         return f"{self.baktun}.{self.katun}.{self.tun}.{self.winal}.{self.kin}"

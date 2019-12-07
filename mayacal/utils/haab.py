@@ -130,8 +130,8 @@ class Haab:
 
         """
         return {
-            'num' : self.month_number
-            'name' : self.month_name
+            'month_number' : self.month_number,
+            'month_name' : self.month_name
         }
 
     def __fuzzy_eq(self, v1, v2):
