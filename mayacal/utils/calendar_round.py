@@ -174,6 +174,19 @@ class CalendarRound:
             poss_dates.append(lc)
             lc = lc.add_days(18980) #LCM of 260 and 365
 
+    def to_dict(self):
+        """Returns a JSON style dictionary representation
+
+        Returns:
+            (dict): Dictionary representation of the object ready for conversion
+                to JSON
+
+        """
+        return {
+            'tzolkin' : self.tzolkin.to_dict(),
+            'haab' : self.haab.to_dict()
+        }
+
 
     def match(self, date):
         """Checks for a potential match with another CalendarRound object

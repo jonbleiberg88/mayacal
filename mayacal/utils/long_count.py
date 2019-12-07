@@ -241,6 +241,22 @@ class LongCount:
 
         return False
 
+    def to_dict(self):
+        """Returns a JSON style dictionary representation
+
+        Returns:
+            (dict): Dictionary representation of the object ready for conversion
+                to JSON
+
+        """
+        return {
+            'baktun' : self.baktun,
+            'katun' : self.katun,
+            'tun' : self.tun,
+            'winal' : self.winal,
+            'kin' : self.kin
+        }
+
 
     def __add__(self, dist):
 

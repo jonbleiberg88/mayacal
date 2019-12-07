@@ -212,6 +212,21 @@ class Mayadate:
 
         return self.long_count.get_glyph_g()
 
+    def to_dict(self):
+        """Returns a JSON style dictionary representation
+
+        Returns:
+            (dict): Dictionary representation of the object ready for conversion
+                to JSON
+
+        """
+        date_dict = {
+            'long_count' : self.long_count.to_dict(),
+            'calendar_round' : self.calendar_round.to_dict(),
+            'glyph_g' : self.glyph_g
+        }
+        return date_dict
+
     def __add__(self, dist):
         lc = self.long_count + dist.long_count
 
@@ -255,6 +270,12 @@ class Mayadate:
     def __repr__(self):
         return f"{self.long_count.__repr__()}  {self.calendar_round.__repr__()}"
 
+def from_dict(dict_obj):
+    lc_dict = dict_obj.get('long_count')
+    cr_dict = dict_obj.get('calendar_round')
+    glyph_g = dict_obj.get('glyph_g')
+
+    return Mayadate(long_count=**lc_dict, calendar_round=**cr_dict, glyph_g)
 
 def main():
     pass

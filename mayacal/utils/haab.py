@@ -121,6 +121,19 @@ class Haab:
         else:
             return False
 
+    def to_dict(self):
+        """Returns a JSON style dictionary representation
+
+        Returns:
+            (dict): Dictionary representation of the object ready for conversion
+                to JSON
+
+        """
+        return {
+            'num' : self.month_number
+            'name' : self.month_name
+        }
+
     def __fuzzy_eq(self, v1, v2):
         """ Helper function for NoneType matching """
 
