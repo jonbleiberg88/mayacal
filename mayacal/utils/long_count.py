@@ -1,8 +1,8 @@
-from .utils import *
+
 from .calendar_round import CalendarRound
 from .tzolkin import Tzolkin
 from .haab import Haab
-from .mayadate import Mayadate
+from .utils import julian_day_to_julian, julian_day_to_gregorian
 
 __all__ = ['LongCount', 'DistanceNumber', 'kin_to_long_count']
 

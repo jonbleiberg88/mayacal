@@ -1,11 +1,9 @@
 import math
 import datetime
 
-from .calendar_round import *
-from .long_count import *
-from .tzolkin import *
-from .haab import *
-from .mayadate import *
+__all__ = ['JulianDate', 'GregorianDate', 'julian_day_to_julian',
+    'julian_day_to_gregorian', 'datetime_to_gregorian', 'datetime_to_julian',
+    'datetime_to_julian_day', 'datetime_to_mayadate']
 
 class JulianDate:
     """Basic class to handle (proleptic) Julian calendar dates and conversions
@@ -30,10 +28,17 @@ class JulianDate:
             month (int): The month number of the Julian calendar date
             year (int): The (astronomical) year number of the Julian calendar date
         """
-
+        if day > 31 or day < 1:
+            raise ValueError("Invalid day, must be integer between 1 and 31")
         self.day = day
+
+        if month > 12 or month < 1:
+            raise ValueError("Invalid month, must be integer between 1 and 12")
         self.month = month
+
         self.year = year
+
+        self.__check_month_days()
 
     def to_julian_day(self):
         """Converts the Julian Calendar date to its corresponding Julian Day number
@@ -91,6 +96,40 @@ class JulianDate:
 
         return Mayadate(long_count, None)
 
+    def is_leap_year(self):
+        """ Determines whether the year of the JulianDate object is a leap year
+
+        Returns:
+            (bool): True if the year is a leap year, False otherwise
+
+        """
+        if self.year % 4 == 0:
+            return True
+
+        return False
+
+    def __check_month_days(self):
+        """ Raises error if the current configuration of month, day, year is invalid"""
+
+        max_days = {1 : 31,
+                2 : 28,
+                3 : 31,
+                4 : 30,
+                5 : 31,
+                6 : 30,
+                7 : 31,
+                8 : 31,
+                9 : 30,
+                10 : 31,
+                11 : 30,
+                12 : 31}
+
+        if self.is_leap_year():
+            max_days[2] = 29
+
+        if max_days[self.month] < self.day:
+            raise ValueError(f"Invalid day, month combination {self.month}/{self.day}")
+
     def __repr__(self):
         return f"({self.day}, {self.month}, {self.year})"
 
@@ -125,10 +164,17 @@ class GregorianDate:
             month (int): The month number of the Gregorian calendar date
             year (int): The (astronomical) year number of the Gregorian calendar date
         """
-
+        if day > 31 or day < 1:
+            raise ValueError("Invalid day, must be integer between 1 and 31")
         self.day = day
+
+        if month > 12 or month < 1:
+            raise ValueError("Invalid month, must be integer between 1 and 12")
         self.month = month
+
         self.year = year
+
+        self.__check_month_days()
 
     def to_julian_day(self):
         """Converts the Gregorian calendar date to its Julian Day number equivalent
@@ -193,6 +239,43 @@ class GregorianDate:
             raise ValueError("datetime.date objects do not support years before 1 CE")
 
         return datetime.date(self.year, self.month, self.day)
+
+    def is_leap_year(self):
+        """ Determines whether the year of the GregorianDate object is a leap year
+
+        Returns:
+            (bool): True if the year is a leap year, False otherwise
+
+        """
+        if self.year % 4 == 0:
+            if self.year % 100 == 0 and self.year % 400 != 0:
+                return False
+            else:
+                return True
+
+        return False
+
+
+    def __check_month_days(self):
+        """ Raises error if the current configuration of month, day, year is invalid"""
+        max_days = {1 : 31,
+                2 : 28,
+                3 : 31,
+                4 : 30,
+                5 : 31,
+                6 : 30,
+                7 : 31,
+                8 : 31,
+                9 : 30,
+                10 : 31,
+                11 : 30,
+                12 : 31}
+
+        if self.is_leap_year():
+            max_days[2] = 29
+
+        if max_days[self.month] < self.day:
+            raise ValueError(f"Invalid day, month combination {self.month}/{self.day}")
 
     def __repr__(self):
         return f"({self.day}, {self.month}, {self.year})"
