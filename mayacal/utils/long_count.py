@@ -259,18 +259,26 @@ class LongCount:
 
     def __add__(self, dist):
 
-        kin, carry = self.__add_and_carry(self.kin, dist.kin, 0, 20)
-        winal, carry = self.__add_and_carry(self.winal, dist.winal, carry, 18)
-        tun, carry = self.__add_and_carry(self.tun, dist.tun, carry, 20)
-        katun, carry = self.__add_and_carry(self.katun, dist.katun, carry, 20)
-        baktun, carry = self.__add_and_carry(self.baktun, dist.baktun, carry, 20)
+        # kin, carry = self.__add_and_carry(self.kin, dist.kin, 0, 20)
+        # winal, carry = self.__add_and_carry(self.winal, dist.winal, carry, 18)
+        # tun, carry = self.__add_and_carry(self.tun, dist.tun, carry, 20)
+        # katun, carry = self.__add_and_carry(self.katun, dist.katun, carry, 20)
+        # baktun, carry = self.__add_and_carry(self.baktun, dist.baktun, carry, 20)
 
-        return LongCount(baktun, katun, tun, winal, kin)
+        # return LongCount(baktun, katun, tun, winal, kin)
 
-    def __add_and_carry(self, val_1, val_2, carry, max):
-        raw_sum = val_1 + val_2 + carry
+        kin_sum = self.get_total_kin() + dist.get_total_kin()
+        if kin_sum >= 0:
+            return kin_to_long_count(kin_sum)
+        else:
+            return DistanceNumber(kin_to_long_count(kin_sum * -1), sign=-1)
 
-        return raw_sum % max, int(raw_sum >= max)
+
+
+    # def __add_and_carry(self, val_1, val_2, carry, max):
+    #     raw_sum = val_1 + val_2 + carry
+    #
+    #     return raw_sum % max, int(raw_sum >= max)
 
 
     def __sub__(self, dist):
