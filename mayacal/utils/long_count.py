@@ -351,6 +351,10 @@ class DistanceNumber(LongCount):
             long_count.winal, long_count.kin)
         if sign == 1 or sign == -1:
             self.sign = sign
+        elif sign == "+":
+            self.sign = 1
+        elif sign == "-":
+            self.sign = -1
         else:
             raise ValueError("sign must be either 1 or -1")
 

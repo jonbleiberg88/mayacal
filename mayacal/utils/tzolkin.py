@@ -56,7 +56,7 @@ class Tzolkin:
                 raise ValueError(f"Invalid tzolkin day name {day_name}")
             self.day_name = day_name
 
-            if day_number not in list(range(1, 13)) and day_number is not None:
+            if day_number not in list(range(1, 14)) and day_number is not None:
                 raise ValueError("Invalid tzolkin day number - must be integer between 1 and 13")
             self.day_number = day_number
 
