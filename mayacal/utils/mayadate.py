@@ -28,7 +28,8 @@ class Mayadate:
 
         """
         if long_count is None:
-            self.LongCount = LongCount(None, None, None, None, None)
+            self.long_count = LongCount(None, None, None, None, None)
+            self.glyph_g = glyph_g
         else:
             self.long_count = long_count
             if long_count.winal is not None and long_count.kin is not None:
@@ -94,7 +95,14 @@ class Mayadate:
         if not self.long_count.has_missing():
             return [self.long_count]
 
-        poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
+        if not self.calendar_round.has_missing():
+            min_lc, max_lc = LongCount(0,0,0,0,0), LongCount(13,19,19,17,19)
+            poss_lc = self.calendar_round.get_long_count_possibilities(min_lc, max_lc)
+            poss_lc = [lc for lc in poss_lc if self.match(lc.get_mayadate())]
+
+
+        else:
+            poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
 
         if poss_lc == []:
             logging.info("No matching dates found - check the inputted values")
@@ -111,6 +119,7 @@ class Mayadate:
         """
         if not self.long_count.has_missing():
             return [self.long_count.get_mayadate()]
+
 
         lcs = self.infer_long_count_dates()
         if lcs == []:
@@ -251,6 +260,36 @@ class Mayadate:
             'glyph_g' : self.glyph_g
         }
         return date_dict
+
+    def match(self, date):
+        """Checks for a potential match with another Mayadate object
+
+        A value of None is treated as matching any value, consistent with the use
+        of None to mark values for later inference.
+
+        Args:
+            date (Mayadate): The Mayadate object to check for a match with
+
+        Returns:
+            (bool): True if the all entries match, with None as an
+                automatic match. False otherwise.
+
+        """
+        lc_match = self.long_count.match(date.long_count)
+        cr_match = self.calendar_round.match(date.calendar_round)
+        g_match = self.__fuzzy_eq(self.glyph_g, date.glyph_g)
+
+        if lc_match and cr_match and g_match:
+            return True
+        return False
+
+    def __fuzzy_eq(self, v1, v2):
+        """ Helper function for NoneType matching """
+
+        if v1 == v2 or v1 is None or v2 is None:
+            return True
+
+        return False
 
     def __add__(self, dist):
         lc = self.long_count + dist.long_count

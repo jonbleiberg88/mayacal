@@ -107,9 +107,9 @@ class LongCount:
         from .mayadate import Mayadate
 
         if self.has_missing():
-            return Mayadate(self, None)
+            return Mayadate(self, None, None)
 
-        return Mayadate(self, self.get_calendar_round())
+        return Mayadate(self, self.get_calendar_round(), None)
 
 
     def add_days(self, num_days, in_place=False):
@@ -255,6 +255,39 @@ class LongCount:
             'winal' : self.winal,
             'kin' : self.kin
         }
+
+    def match(self, lc):
+        """Checks for a potential match with another LongCount object
+
+        A value of None is treated as matching any value, consistent with the use
+        of None to mark values for later inference.
+
+        Args:
+            date (LongCount): The LongCount object to check for a match with
+
+        Returns:
+            (bool): True if the all entries match, with None as an
+                automatic match. False otherwise.
+
+        """
+        baktun_match = self.__fuzzy_eq(self.baktun, lc.baktun)
+        katun_match = self.__fuzzy_eq(self.katun, lc.katun)
+        tun_match = self.__fuzzy_eq(self.tun, lc.tun)
+        winal_match = self.__fuzzy_eq(self.winal, lc.winal)
+        kin_match = self.__fuzzy_eq(self.kin, lc.kin)
+
+        if baktun_match and katun_match and tun_match and winal_match and kin_match:
+            return True
+        return False
+
+
+    def __fuzzy_eq(self, v1, v2):
+        """ Helper function for NoneType matching """
+
+        if v1 == v2 or v1 is None or v2 is None:
+            return True
+
+        return False
 
 
     def __add__(self, dist):
