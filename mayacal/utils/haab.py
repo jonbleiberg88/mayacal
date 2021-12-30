@@ -1,13 +1,29 @@
-
-
-__all__ = ['Haab', 'HAAB_MONTHS', 'HAAB_IDX_TO_MONTH', 'HAAB_MONTH_TO_IDX']
+__all__ = ["Haab", "HAAB_MONTHS", "HAAB_IDX_TO_MONTH", "HAAB_MONTH_TO_IDX"]
 # Module level constants
-HAAB_MONTHS = ["Pop", "Wo", "Sip", "Sotz", "Sek", "Xul", "Yaxkin", "Mol", "Chen",
-                "Yax", "Sak", "Keh", "Mak", "Kankin", "Muwan", "Pax", "Kayab",
-                "Kumku", "Wayeb"]
+HAAB_MONTHS = [
+    "Pop",
+    "Wo",
+    "Sip",
+    "Sotz",
+    "Sek",
+    "Xul",
+    "Yaxkin",
+    "Mol",
+    "Chen",
+    "Yax",
+    "Sak",
+    "Keh",
+    "Mak",
+    "Kankin",
+    "Muwan",
+    "Pax",
+    "Kayab",
+    "Kumku",
+    "Wayeb",
+]
 
-HAAB_IDX_TO_MONTH = {idx:month for idx, month in enumerate(HAAB_MONTHS)}
-HAAB_MONTH_TO_IDX = {month:idx for idx, month in HAAB_IDX_TO_MONTH.items()}
+HAAB_IDX_TO_MONTH = {idx: month for idx, month in enumerate(HAAB_MONTHS)}
+HAAB_MONTH_TO_IDX = {month: idx for idx, month in HAAB_IDX_TO_MONTH.items()}
 
 
 class Haab:
@@ -18,6 +34,7 @@ class Haab:
         day_name (str): The day name associated with the Haab date
 
     """
+
     def __init__(self, month_number=None, month_name=None):
         """Creates a new Haab object
 
@@ -37,10 +54,14 @@ class Haab:
         self.month_name = month_name
 
         if month_name == "Wayeb":
-             if month_number not in list(range(5)):
-                 raise ValueError("Invalid Haab month number, Wayeb number must be between 0 and 4")
+            if month_number not in list(range(5)):
+                raise ValueError(
+                    "Invalid Haab month number, Wayeb number must be between 0 and 4"
+                )
         elif month_number not in list(range(20)) and month_number is not None:
-            raise ValueError("Invalid Haab month number, must be an integer between 0 and 19 or NoneType")
+            raise ValueError(
+                "Invalid Haab month number, must be an integer between 0 and 19 or NoneType"
+            )
 
         self.month_number = month_number
 
@@ -50,7 +71,7 @@ class Haab:
             self.haab_num = None
 
     def has_missing(self):
-        """ Checks whether the month number or name is missing
+        """Checks whether the month number or name is missing
 
         Returns:
             (bool): True if either the month number or month name is None, False
@@ -63,7 +84,7 @@ class Haab:
         return False
 
     def reset_by_haab_num(self, new_num):
-        """ Set the Haab object to a new position by its 365 day count number
+        """Set the Haab object to a new position by its 365 day count number
 
         Note:
             0 Pop is used as the reference 'Day 0' of the cycle
@@ -78,7 +99,7 @@ class Haab:
         return self
 
     def add_days(self, num_days, in_place=False):
-        """ Adds days to the current Haab object
+        """Adds days to the current Haab object
 
         Args:
             num_days (int): Number of days to add to the Haab object
@@ -129,13 +150,10 @@ class Haab:
                 to JSON
 
         """
-        return {
-            'month_number' : self.month_number,
-            'month_name' : self.month_name
-        }
+        return {"month_number": self.month_number, "month_name": self.month_name}
 
     def __fuzzy_eq(self, v1, v2):
-        """ Helper function for NoneType matching """
+        """Helper function for NoneType matching"""
 
         if v1 == v2 or v1 is None or v2 is None:
             return True
@@ -153,7 +171,6 @@ class Haab:
 
     def __sub__(self, date):
         return abs(self.haab_num - date.haab_num)
-
 
     def __repr__(self):
         return f"{self.month_number} {self.month_name}"

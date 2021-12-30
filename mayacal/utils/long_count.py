@@ -1,10 +1,10 @@
-
 from .calendar_round import CalendarRound
 from .tzolkin import Tzolkin
 from .haab import Haab
 from .utils import julian_day_to_julian, julian_day_to_gregorian
 
-__all__ = ['LongCount', 'DistanceNumber', 'kin_to_long_count']
+__all__ = ["LongCount", "DistanceNumber", "kin_to_long_count"]
+
 
 class LongCount:
     """Represents a position in the Maya Long Count
@@ -63,9 +63,8 @@ class LongCount:
             raise ValueError("Kin must be between 0 and 19")
         self.kin = kin
 
-
     def get_total_kin(self):
-        """ Returns the total number of kin since the initial date 0.0.0.0.0
+        """Returns the total number of kin since the initial date 0.0.0.0.0
 
         Returns:
             (int): The number of kin since the initial date of the Mayan calendar.
@@ -73,14 +72,20 @@ class LongCount:
         """
 
         if self.has_missing():
-            raise ValueError("Operation not valid for incomplete Long Count dates, try inferring the missing portions")
+            raise ValueError(
+                "Operation not valid for incomplete Long Count dates, try inferring the missing portions"
+            )
 
         else:
-            total_kin = (self.kin + (self.winal * 20) + (self.tun * 20 * 18) +
-                (self.katun * 18 * (20 ** 2)) + (self.baktun * 18 * (20 ** 3)))
+            total_kin = (
+                self.kin
+                + (self.winal * 20)
+                + (self.tun * 20 * 18)
+                + (self.katun * 18 * (20 ** 2))
+                + (self.baktun * 18 * (20 ** 3))
+            )
 
             return total_kin
-
 
     def get_calendar_round(self):
         """Returns the calendar round associated with the current LongCount object
@@ -111,7 +116,6 @@ class LongCount:
 
         return Mayadate(self, self.get_calendar_round(), None)
 
-
     def add_days(self, num_days, in_place=False):
         """Adds num_days days (kin) to the current LongCount object
 
@@ -132,7 +136,6 @@ class LongCount:
         else:
             return kin_to_long_count(total_days)
 
-
     def get_glyph_g(self):
         """Calculates the number of the Glyph G associated with the Long Count date
 
@@ -142,7 +145,9 @@ class LongCount:
         """
 
         if self.winal is None or self.kin is None:
-            raise ValueError("Both the Winal and Kin numbers must be provided to infer Glyph G")
+            raise ValueError(
+                "Both the Winal and Kin numbers must be provided to infer Glyph G"
+            )
 
         g_num = (self.winal * 20 + self.kin) % 9
 
@@ -215,7 +220,7 @@ class LongCount:
         return julian_day_to_gregorian(julian_day)
 
     def has_missing(self):
-        """ Checks whether the Long Count object has missing values in any position
+        """Checks whether the Long Count object has missing values in any position
 
         Returns:
             (bool): True if any of the Long Count components (baktun, katun, ...)
@@ -249,11 +254,11 @@ class LongCount:
 
         """
         return {
-            'baktun' : self.baktun,
-            'katun' : self.katun,
-            'tun' : self.tun,
-            'winal' : self.winal,
-            'kin' : self.kin
+            "baktun": self.baktun,
+            "katun": self.katun,
+            "tun": self.tun,
+            "winal": self.winal,
+            "kin": self.kin,
         }
 
     def match(self, lc):
@@ -280,15 +285,13 @@ class LongCount:
             return True
         return False
 
-
     def __fuzzy_eq(self, v1, v2):
-        """ Helper function for NoneType matching """
+        """Helper function for NoneType matching"""
 
         if v1 == v2 or v1 is None or v2 is None:
             return True
 
         return False
-
 
     def __add__(self, dist):
 
@@ -306,13 +309,10 @@ class LongCount:
         else:
             return DistanceNumber(kin_to_long_count(kin_sum * -1), sign=-1)
 
-
-
     # def __add_and_carry(self, val_1, val_2, carry, max):
     #     raw_sum = val_1 + val_2 + carry
     #
     #     return raw_sum % max, int(raw_sum >= max)
-
 
     def __sub__(self, dist):
         kin_diff = self.get_total_kin() - dist.get_total_kin()
@@ -360,8 +360,9 @@ class LongCount:
     def __repr__(self):
         return f"{self.baktun}.{self.katun}.{self.tun}.{self.winal}.{self.kin}"
 
+
 class DistanceNumber(LongCount):
-    """ Represents a signed Distance Number in Long Count units
+    """Represents a signed Distance Number in Long Count units
 
 
     Attributes:
@@ -380,8 +381,13 @@ class DistanceNumber(LongCount):
 
         """
         self.long_count = long_count
-        super().__init__(long_count.baktun, long_count.katun, long_count.tun,
-            long_count.winal, long_count.kin)
+        super().__init__(
+            long_count.baktun,
+            long_count.katun,
+            long_count.tun,
+            long_count.winal,
+            long_count.kin,
+        )
         if sign == 1 or sign == -1:
             self.sign = sign
         elif sign == "+":
@@ -392,13 +398,13 @@ class DistanceNumber(LongCount):
             raise ValueError("sign must be either 1 or -1")
 
     def get_total_kin(self):
-        """ Returns the total number of kin associated with the distance number
+        """Returns the total number of kin associated with the distance number
 
         Returns:
             (int): The number of kin associated with the distance number.
 
         """
-        return  self.sign * super().get_total_kin()
+        return self.sign * super().get_total_kin()
 
     def to_approx_years(self, pretty_print=False):
         total_kin = abs(self.get_total_kin())
@@ -406,7 +412,7 @@ class DistanceNumber(LongCount):
         years = int(total_kin // 365.25)
         total_kin -= years * 365.25
 
-        months = int(total_kin  // 30.44) #average month length
+        months = int(total_kin // 30.44)  # average month length
         total_kin -= months * 30.44
 
         if not pretty_print:
@@ -417,15 +423,12 @@ class DistanceNumber(LongCount):
         else:
             return f"-{years} years, -{months} months, -{round(total_kin)} days"
 
-
-
     def __repr__(self):
         if self.sign == 1:
             return self.long_count.__repr__()
 
         else:
             return f"-{self.long_count.__repr__()}"
-
 
 
 def kin_to_long_count(num_kin):

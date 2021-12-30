@@ -1,9 +1,17 @@
 import math
 import datetime
 
-__all__ = ['JulianDate', 'GregorianDate', 'julian_day_to_julian',
-    'julian_day_to_gregorian', 'datetime_to_gregorian', 'datetime_to_julian',
-    'datetime_to_julian_day', 'datetime_to_mayadate']
+__all__ = [
+    "JulianDate",
+    "GregorianDate",
+    "julian_day_to_julian",
+    "julian_day_to_gregorian",
+    "datetime_to_gregorian",
+    "datetime_to_julian",
+    "datetime_to_julian_day",
+    "datetime_to_mayadate",
+]
+
 
 class JulianDate:
     """Basic class to handle (proleptic) Julian calendar dates and conversions
@@ -55,7 +63,9 @@ class JulianDate:
         """
 
         if self.year < -4712:
-            raise ValueError("Algorithm only valid for Julian year greater than or equal to -4712")
+            raise ValueError(
+                "Algorithm only valid for Julian year greater than or equal to -4712"
+            )
 
         if self.month < 3:
             M = self.month + 12
@@ -78,7 +88,6 @@ class JulianDate:
         """
         return julian_day_to_gregorian(round(self.to_julian_day()))
 
-
     def to_mayadate(self, correlation=584283):
         """Converts the Julian calendar date to its Mayan calendar equivalent
 
@@ -97,7 +106,7 @@ class JulianDate:
         return Mayadate(long_count, None)
 
     def is_leap_year(self):
-        """ Determines whether the year of the JulianDate object is a leap year
+        """Determines whether the year of the JulianDate object is a leap year
 
         Returns:
             (bool): True if the year is a leap year, False otherwise
@@ -109,20 +118,22 @@ class JulianDate:
         return False
 
     def __check_month_days(self):
-        """ Raises error if the current configuration of month, day, year is invalid"""
+        """Raises error if the current configuration of month, day, year is invalid"""
 
-        max_days = {1 : 31,
-                2 : 28,
-                3 : 31,
-                4 : 30,
-                5 : 31,
-                6 : 30,
-                7 : 31,
-                8 : 31,
-                9 : 30,
-                10 : 31,
-                11 : 30,
-                12 : 31}
+        max_days = {
+            1: 31,
+            2: 28,
+            3: 31,
+            4: 30,
+            5: 31,
+            6: 30,
+            7: 31,
+            8: 31,
+            9: 30,
+            10: 31,
+            11: 30,
+            12: 31,
+        }
 
         if self.is_leap_year():
             max_days[2] = 29
@@ -195,8 +206,15 @@ class GregorianDate:
 
         D = self.day
 
-        return D + (153 * M - 457) // 5 + 365 * Y + math.floor(
-            Y / 4) - math.floor(Y / 100) + math.floor(Y / 400) + 1721118.5
+        return (
+            D
+            + (153 * M - 457) // 5
+            + 365 * Y
+            + math.floor(Y / 4)
+            - math.floor(Y / 100)
+            + math.floor(Y / 400)
+            + 1721118.5
+        )
 
     def to_julian(self):
         """Converts the Gregorian calendar date to its Julian calendar equivalent
@@ -241,7 +259,7 @@ class GregorianDate:
         return datetime.date(self.year, self.month, self.day)
 
     def is_leap_year(self):
-        """ Determines whether the year of the GregorianDate object is a leap year
+        """Determines whether the year of the GregorianDate object is a leap year
 
         Returns:
             (bool): True if the year is a leap year, False otherwise
@@ -255,21 +273,22 @@ class GregorianDate:
 
         return False
 
-
     def __check_month_days(self):
-        """ Raises error if the current configuration of month, day, year is invalid"""
-        max_days = {1 : 31,
-                2 : 28,
-                3 : 31,
-                4 : 30,
-                5 : 31,
-                6 : 30,
-                7 : 31,
-                8 : 31,
-                9 : 30,
-                10 : 31,
-                11 : 30,
-                12 : 31}
+        """Raises error if the current configuration of month, day, year is invalid"""
+        max_days = {
+            1: 31,
+            2: 28,
+            3: 31,
+            4: 30,
+            5: 31,
+            6: 30,
+            7: 31,
+            8: 31,
+            9: 30,
+            10: 31,
+            11: 30,
+            12: 31,
+        }
 
         if self.is_leap_year():
             max_days[2] = 29
@@ -288,9 +307,7 @@ class GregorianDate:
             return f"{_num_to_month(self.month)} {self.day}, {abs(self.year) + 1} BCE"
 
 
-
-
-def _convert_julian_day(julian_day, mode='julian'):
+def _convert_julian_day(julian_day, mode="julian"):
     """Converts a Julian Day number to its (proleptic) Julian or Gregorian calendar equivalent
 
     Adapted from: https://en.wikipedia.org/wiki/Julian_day#Julian_or_Gregorian_calendar_from_Julian_day_number
@@ -309,7 +326,9 @@ def _convert_julian_day(julian_day, mode='julian'):
             target calendar.
     """
     if julian_day < 0:
-        raise ValueError("Algorithm only valid for Julian Day greater than or equal to zero")
+        raise ValueError(
+            "Algorithm only valid for Julian Day greater than or equal to zero"
+        )
     julian_day = round(julian_day)
 
     # algorithm parameters
@@ -327,9 +346,9 @@ def _convert_julian_day(julian_day, mode='julian'):
     C = -38
 
     # intermediate calculations
-    if mode == 'julian':
+    if mode == "julian":
         f = julian_day + j
-    elif mode == 'gregorian':
+    elif mode == "gregorian":
         f = julian_day + j + (((4 * julian_day + B) // 146097) * 3) // 4 + C
     else:
         raise ValueError("Unrecognized mode - supports 'julian' or 'gregorian'")
@@ -339,11 +358,10 @@ def _convert_julian_day(julian_day, mode='julian'):
     h = u * g + w
 
     day = (h % s) // u + 1  # day in target calendar
-    month =  ((h // s + m) % n) + 1 # month in target calendar
-    year = (e // p) - (y + (n + m - month) // n) # year in target calendar
+    month = ((h // s + m) % n) + 1  # month in target calendar
+    year = (e // p) - (y + (n + m - month) // n)  # year in target calendar
 
     return day, month, year
-
 
 
 def julian_day_to_julian(julian_day):
@@ -364,10 +382,9 @@ def julian_day_to_julian(julian_day):
 
     """
 
-    day, month, year = _convert_julian_day(julian_day, mode='julian')
+    day, month, year = _convert_julian_day(julian_day, mode="julian")
 
     return JulianDate(day, month, year)
-
 
 
 def julian_day_to_gregorian(julian_day):
@@ -387,9 +404,10 @@ def julian_day_to_gregorian(julian_day):
             Gregorian calendar.
 
     """
-    day, month, year = _convert_julian_day(julian_day, mode='gregorian')
+    day, month, year = _convert_julian_day(julian_day, mode="gregorian")
 
     return GregorianDate(day, month, year)
+
 
 def datetime_to_gregorian(date):
     """Converts a datetime.date object to a GregorianDate object
@@ -403,6 +421,7 @@ def datetime_to_gregorian(date):
     """
 
     return GregorianDate(date.day, date.month, date.year)
+
 
 def datetime_to_julian(date):
     """Converts a datetime.date object to the corresponding Julian calendar date
@@ -418,6 +437,7 @@ def datetime_to_julian(date):
     g = GregorianDate(date.day, date.month, date.year)
     return g.to_julian()
 
+
 def datetime_to_julian_day(date):
     """Converts a datetime.date object to the corresponding Julian Day number
 
@@ -431,6 +451,7 @@ def datetime_to_julian_day(date):
 
     g = GregorianDate(date.day, date.month, date.year)
     return g.to_julian_day()
+
 
 def datetime_to_mayadate(date):
     """Converts a datetime.date object to the corresponding Maya calendar date
@@ -447,7 +468,6 @@ def datetime_to_mayadate(date):
     return g.to_mayadate()
 
 
-
 def _num_to_month(num):
     """Helper function to convert month number to short name
 
@@ -459,15 +479,17 @@ def _num_to_month(num):
 
     """
 
-    return {1 : 'Jan',
-            2 : 'Feb',
-            3 : 'Mar',
-            4 : 'Apr',
-            5 : 'May',
-            6 : 'Jun',
-            7 : 'Jul',
-            8 : 'Aug',
-            9 : 'Sep',
-            10 : 'Oct',
-            11 : 'Nov',
-            12 : 'Dec'}[num]
+    return {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
+    }[num]
