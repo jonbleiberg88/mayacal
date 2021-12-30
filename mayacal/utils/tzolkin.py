@@ -1,13 +1,37 @@
-
-__all__ = ['Tzolkin', 'TZOLKIN_DAYS', 'TZOLKIN_DAY_TO_NUM', 'TZOLKIN_IDX_TO_DAY',
-'TZOLKIN_NUM_TO_DAY', 'TZOLKIN_DAY_TO_IDX']
+__all__ = [
+    "Tzolkin",
+    "TZOLKIN_DAYS",
+    "TZOLKIN_DAY_TO_NUM",
+    "TZOLKIN_IDX_TO_DAY",
+    "TZOLKIN_NUM_TO_DAY",
+    "TZOLKIN_DAY_TO_IDX",
+]
 # Module level constants
-TZOLKIN_DAYS = ["Imix", "Ik", "Akbal", "Kan", "Chikchan", "Kimi", "Manik",
-                    "Lamat", "Muluk", "Ok", "Chuwen", "Eb", "Ben", "Ix",
-                    "Men", "Kib", "Kaban", "Etznab", "Kawak", "Ajaw"]
+TZOLKIN_DAYS = [
+    "Imix",
+    "Ik",
+    "Akbal",
+    "Kan",
+    "Chikchan",
+    "Kimi",
+    "Manik",
+    "Lamat",
+    "Muluk",
+    "Ok",
+    "Chuwen",
+    "Eb",
+    "Ben",
+    "Ix",
+    "Men",
+    "Kib",
+    "Kaban",
+    "Etznab",
+    "Kawak",
+    "Ajaw",
+]
 
-TZOLKIN_IDX_TO_DAY = {idx:day for idx, day in enumerate(TZOLKIN_DAYS)}
-TZOLKIN_DAY_TO_IDX = {day:idx for idx, day in TZOLKIN_IDX_TO_DAY.items()}
+TZOLKIN_IDX_TO_DAY = {idx: day for idx, day in enumerate(TZOLKIN_DAYS)}
+TZOLKIN_DAY_TO_IDX = {day: idx for idx, day in TZOLKIN_IDX_TO_DAY.items()}
 
 TZOLKIN_NUM_TO_DAY = {}
 
@@ -15,7 +39,7 @@ for _i in range(260):
     _date = ((_i % 13) + 1, TZOLKIN_IDX_TO_DAY[(_i % 20)])
     TZOLKIN_NUM_TO_DAY[_i] = _date
 
-TZOLKIN_DAY_TO_NUM = {date:num for num, date in TZOLKIN_NUM_TO_DAY.items()}
+TZOLKIN_DAY_TO_NUM = {date: num for num, date in TZOLKIN_NUM_TO_DAY.items()}
 
 
 class Tzolkin:
@@ -46,10 +70,11 @@ class Tzolkin:
             if day_number is not None and day_name is not None:
                 implied_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
                 if implied_num != tzolkin_num:
-                    raise ValueError(f"Provided Tzolkin number {tzolkin_num} does not match provided day name and number {day_number} {day_name}")
+                    raise ValueError(
+                        f"Provided Tzolkin number {tzolkin_num} does not match provided day name and number {day_number} {day_name}"
+                    )
 
             self.reset_by_tzolkin_num(tzolkin_num)
-
 
         else:
             if day_name not in TZOLKIN_DAYS and day_name is not None:
@@ -57,14 +82,16 @@ class Tzolkin:
             self.day_name = day_name
 
             if day_number not in list(range(1, 14)) and day_number is not None:
-                raise ValueError("Invalid tzolkin day number - must be integer between 1 and 13")
+                raise ValueError(
+                    "Invalid tzolkin day number - must be integer between 1 and 13"
+                )
             self.day_number = day_number
 
             if day_number is not None and day_name is not None:
                 self.tzolkin_num = TZOLKIN_DAY_TO_NUM[(day_number, day_name)]
 
     def reset_by_tzolkin_num(self, new_num):
-        """ Set the Tzolkin object to a new position by its 260 day count number
+        """Set the Tzolkin object to a new position by its 260 day count number
 
         Note:
             1 Imix is used as the reference 'Day 0' of the cycle
@@ -81,7 +108,7 @@ class Tzolkin:
         self.day_number, self.day_name = TZOLKIN_NUM_TO_DAY[self.tzolkin_num]
 
     def add_days(self, num_days, in_place=False):
-        """ Adds days to the current Tzolkin object
+        """Adds days to the current Tzolkin object
 
         Args:
             num_days (int): Number of days to add to the Tzolkin object
@@ -101,7 +128,7 @@ class Tzolkin:
             return Tzolkin(tzolkin_num=new_num)
 
     def has_missing(self):
-        """ Checks whether the day number or name is missing
+        """Checks whether the day number or name is missing
 
         Returns:
             (bool): True if either the day number or day name is None, False
@@ -144,23 +171,19 @@ class Tzolkin:
                 to JSON
 
         """
-        return {
-            'day_number' : self.day_number,
-            'day_name' : self.day_name
-        }
+        return {"day_number": self.day_number, "day_name": self.day_name}
 
     def __fuzzy_eq(self, v1, v2):
-        """ Helper function for NoneType matching """
+        """Helper function for NoneType matching"""
 
         if v1 == v2 or v1 is None or v2 is None:
             return True
 
         return False
 
-
     def __eq__(self, date):
-        name_same = (self.day_name == date.day_name)
-        num_same = (self.day_number == date.day_number)
+        name_same = self.day_name == date.day_name
+        num_same = self.day_number == date.day_number
 
         if name_same and num_same:
             return True

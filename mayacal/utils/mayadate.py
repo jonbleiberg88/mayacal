@@ -7,8 +7,9 @@ import logging
 
 __all__ = ["Mayadate", "from_dict"]
 
+
 class Mayadate:
-    """ Umbrella class to handle Maya calendar dates, conversions, and inference
+    """Umbrella class to handle Maya calendar dates, conversions, and inference
 
     Attributes:
         long_count (LongCount): The Long Count representation of the date
@@ -35,7 +36,9 @@ class Mayadate:
             if long_count.winal is not None and long_count.kin is not None:
                 g = self.long_count.get_glyph_g()
                 if g != glyph_g and glyph_g is not None:
-                    raise ValueError("Provided Glyph G does not match the Long Count date")
+                    raise ValueError(
+                        "Provided Glyph G does not match the Long Count date"
+                    )
                 self.glyph_g = g
 
             else:
@@ -51,14 +54,14 @@ class Mayadate:
             self.calendar_round = calendar_round
 
     def has_missing(self):
-        """ Checks whether the Mayadate object has missing values in any position
+        """Checks whether the Mayadate object has missing values in any position
 
         Returns:
             (bool): True if any of the Long Count components (baktun, katun, ...)
                 or Calendar Round components are None. Otherwise returns False.
 
         """
-        return (self.long_count.has_missing() or self.calendar_round.has_missing())
+        return self.long_count.has_missing() or self.calendar_round.has_missing()
 
     def add_days(self, num_days, in_place=False):
         """Adds num_days days (kin) to the current Mayadate object
@@ -80,8 +83,10 @@ class Mayadate:
 
             return self
         else:
-            return Mayadate(self.long_count.add_days(num_days),
-                self.calendar_round.add_days(num_days))
+            return Mayadate(
+                self.long_count.add_days(num_days),
+                self.calendar_round.add_days(num_days),
+            )
 
     def infer_long_count_dates(self):
         """Finds Long Count dates that match the supplied information
@@ -96,10 +101,9 @@ class Mayadate:
             return [self.long_count]
 
         if not self.calendar_round.has_missing():
-            min_lc, max_lc = LongCount(0,0,0,0,0), LongCount(13,19,19,17,19)
+            min_lc, max_lc = LongCount(0, 0, 0, 0, 0), LongCount(13, 19, 19, 17, 19)
             poss_lc = self.calendar_round.get_long_count_possibilities(min_lc, max_lc)
             poss_lc = [lc for lc in poss_lc if self.match(lc.get_mayadate())]
-
 
         else:
             poss_lc = self.__infer_lc_recursive(self.long_count.to_list(), [])
@@ -120,14 +124,13 @@ class Mayadate:
         if not self.long_count.has_missing():
             return [self.long_count.get_mayadate()]
 
-
         lcs = self.infer_long_count_dates()
         if lcs == []:
             logging.info("No matching dates found - check the inputted values")
         return [lc.get_mayadate() for lc in lcs]
 
     def __infer_lc_recursive(self, lc, poss_dates):
-        """ Helper function to recursively check for possible dates """
+        """Helper function to recursively check for possible dates"""
 
         if None not in lc:
             lc_obj = LongCount(*lc)
@@ -139,7 +142,7 @@ class Mayadate:
                     return lc_obj
             return
 
-        max_vals = [14,20,20,18,20]
+        max_vals = [14, 20, 20, 18, 20]
 
         for idx, v in enumerate(zip(lc, max_vals)):
             val, max = v
@@ -204,7 +207,7 @@ class Mayadate:
         return self.long_count.to_gregorian(correlation)
 
     def get_total_kin(self):
-        """ Returns the total number of kin since the initial date 0.0.0.0.0
+        """Returns the total number of kin since the initial date 0.0.0.0.0
 
         Returns:
             (int): The number of kin since the initial date of the Mayan calendar.
@@ -255,9 +258,9 @@ class Mayadate:
 
         """
         date_dict = {
-            'long_count' : self.long_count.to_dict(),
-            'calendar_round' : self.calendar_round.to_dict(),
-            'glyph_g' : self.glyph_g
+            "long_count": self.long_count.to_dict(),
+            "calendar_round": self.calendar_round.to_dict(),
+            "glyph_g": self.glyph_g,
         }
         return date_dict
 
@@ -284,7 +287,7 @@ class Mayadate:
         return False
 
     def __fuzzy_eq(self, v1, v2):
-        """ Helper function for NoneType matching """
+        """Helper function for NoneType matching"""
 
         if v1 == v2 or v1 is None or v2 is None:
             return True
@@ -334,8 +337,9 @@ class Mayadate:
     def __repr__(self):
         return f"{self.long_count.__repr__()}  {self.calendar_round.__repr__()}"
 
+
 def from_dict(dict_obj):
-    """ Converts dictionary to Mayadate object
+    """Converts dictionary to Mayadate object
 
     Mainly intended for use with JSON objects.
     Dictionary must be in format:
@@ -368,18 +372,20 @@ def from_dict(dict_obj):
     Returns:
         (Mayadate): the corresponding Mayadate object
     """
-    lc_dict = _none_to_dict(dict_obj.get('long_count', {}))
+    lc_dict = _none_to_dict(dict_obj.get("long_count", {}))
 
-    cr_dict = _none_to_dict(dict_obj.get('calendar_round', {}))
+    cr_dict = _none_to_dict(dict_obj.get("calendar_round", {}))
 
-    tz_dict = _none_to_dict(cr_dict.get('tzolkin', {}))
-    hb_dict = _none_to_dict(cr_dict.get('haab', {}))
+    tz_dict = _none_to_dict(cr_dict.get("tzolkin", {}))
+    hb_dict = _none_to_dict(cr_dict.get("haab", {}))
 
-    glyph_g = dict_obj.get('glyph_g')
+    glyph_g = dict_obj.get("glyph_g")
 
-    return Mayadate(long_count= LongCount(**lc_dict),
+    return Mayadate(
+        long_count=LongCount(**lc_dict),
         calendar_round=CalendarRound(Tzolkin(**tz_dict), Haab(**hb_dict)),
-        glyph_g=glyph_g)
+        glyph_g=glyph_g,
+    )
 
 
 def _none_to_dict(obj):
@@ -390,8 +396,10 @@ def _none_to_dict(obj):
     else:
         raise ValueError("Dictionary not properly formatted - see documentation")
 
+
 def main():
     pass
+
 
 if __name__ == "__main__":
     main()

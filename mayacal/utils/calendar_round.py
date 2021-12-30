@@ -1,7 +1,8 @@
 from .haab import Haab
 from .tzolkin import Tzolkin, TZOLKIN_DAY_TO_NUM
 
-__all__ =['CalendarRound']
+__all__ = ["CalendarRound"]
+
 
 class CalendarRound:
     """Represents a position in the Mayan Calendar Round.
@@ -14,8 +15,9 @@ class CalendarRound:
         valid (bool): Whether the Tzolkin day name matches the Haab month number
 
     """
+
     def __init__(self, tzolkin=None, haab=None, override_coef_check=False):
-        """ Creates a new CalendarRound object
+        """Creates a new CalendarRound object
 
         Supports use of NoneType to mark positions for later inference.
 
@@ -49,7 +51,6 @@ class CalendarRound:
         if not override_coef_check and not self.valid:
             raise ValueError("Invalid Haab month coefficient, Tzolkin day name combo")
 
-
     def has_missing(self):
         """Checks whether the Calendar Round has any missing components
 
@@ -59,8 +60,7 @@ class CalendarRound:
 
         """
 
-        return (self.tzolkin.has_missing() or self.haab.has_missing())
-
+        return self.tzolkin.has_missing() or self.haab.has_missing()
 
     def add_days(self, num_days, in_place=False):
         """Adds num_days days (kin) to the current CalendarRound object
@@ -86,7 +86,6 @@ class CalendarRound:
             new_tzolkin = self.tzolkin.add_days(num_days)
 
             return CalendarRound(new_tzolkin, new_haab)
-
 
     def __check_valid(self):
         """Checks whether the Tzolkin day name can occur with the Haab month number
@@ -126,10 +125,8 @@ class CalendarRound:
                 return False
             return True
 
-
         else:
             raise ValueError(f"Invalid month coefficient {self.haab.month_number}")
-
 
     def get_long_count_possibilities(self, min_date, max_date):
         """Finds Long Count dates that correspond to the Calendar Round date
@@ -150,7 +147,9 @@ class CalendarRound:
         from .long_count import LongCount, kin_to_long_count
 
         min_cal_round = min_date.get_calendar_round()
-        init_num = TZOLKIN_DAY_TO_NUM[(min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)]
+        init_num = TZOLKIN_DAY_TO_NUM[
+            (min_cal_round.tzolkin.day_number, min_cal_round.tzolkin.day_name)
+        ]
         day_num = TZOLKIN_DAY_TO_NUM[(self.tzolkin.day_number, self.tzolkin.day_name)]
 
         cycle_num = (day_num - init_num) % 260
@@ -164,7 +163,6 @@ class CalendarRound:
             count += 1
             lc = lc.add_days(260)
 
-
         poss_dates = []
 
         while True:
@@ -172,7 +170,7 @@ class CalendarRound:
                 return poss_dates
 
             poss_dates.append(lc)
-            lc = lc.add_days(18980) #LCM of 260 and 365
+            lc = lc.add_days(18980)  # LCM of 260 and 365
 
     def to_dict(self):
         """Returns a JSON style dictionary representation
@@ -182,11 +180,7 @@ class CalendarRound:
                 to JSON
 
         """
-        return {
-            'tzolkin' : self.tzolkin.to_dict(),
-            'haab' : self.haab.to_dict()
-        }
-
+        return {"tzolkin": self.tzolkin.to_dict(), "haab": self.haab.to_dict()}
 
     def match(self, date):
         """Checks for a potential match with another CalendarRound object
@@ -214,7 +208,6 @@ class CalendarRound:
             return True
         else:
             return False
-
 
     def __repr__(self):
         return f"{self.tzolkin.__repr__()} {self.haab.__repr__()}"
