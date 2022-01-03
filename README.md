@@ -3,7 +3,7 @@ WORK IN PROGRESS - Implementation of some calendrical features for Classical May
 
 Requires Python 3.5+
 
-**Installation**
+## Installation
 
 ```shell
 
@@ -11,7 +11,9 @@ pip install mayacal
 
 ```
 
-**Example Usage:**
+
+
+## Example Usage:
 
 Import:
 
@@ -85,8 +87,8 @@ Infer missing date components:
 
 ```python
 
->>> lc = mc.LongCount(9,None,None,None,None)
 >>> cr = mc.CalendarRound(mc.Tzolkin(4, "Ajaw"), mc.Haab(8, "Kumku"))
+>>> lc = mc.LongCount(9,None,None,None,None)
 >>> date = mc.Mayadate(lc, cr, glyph_g='G3')
 >>> date.infer_mayadates()
 [9.1.17.15.0  4 Ajaw 8 Kumku]
@@ -95,10 +97,30 @@ Infer missing date components:
 
 ```python
 
->>> lc = mc.LongCount(10,None,8,10,None)
 >>> cr = mc.CalendarRound(mc.Tzolkin(4, "Ajaw"), haab=None)
+>>> lc = mc.LongCount(10,None,8,10,None)
 >>> date = mc.Mayadate(lc, cr)
 >>> date.infer_long_count_dates()
 [10.1.8.10.0, 10.14.8.10.0]
 
 ```
+
+## Development
+
+### Dependencies
+There are currently no external dependencies outside of the standard python library. Note the the package requires Python 3.5 or later.
+
+
+### Testing
+Testing is implemented via pytest (WIP).
+
+After instaling pytest, you can run all the tests in the package using the following command:
+```shell
+python -m py.test
+```
+
+To run tests in a specific file, use:
+```shell
+python -m py.test tests/...PATH_TO_TEST_FILE... 
+```
+
