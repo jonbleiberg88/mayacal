@@ -111,10 +111,10 @@ Infer missing date components:
 There are currently no external dependencies outside of the standard python library. Note the the package requires Python 3.5 or later.
 
 
-### Testing
-Testing is implemented via pytest (WIP).
+### Testing (WIP)
+Testing is implemented via [pytest](https://docs.pytest.org/en/latest/index.html).
 
-After instaling pytest, you can run all the tests in the package using the following command:
+After installing pytest, you can run all the tests in the package using the following command:
 ```shell
 python -m py.test
 ```
