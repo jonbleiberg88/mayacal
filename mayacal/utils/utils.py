@@ -141,6 +141,13 @@ class JulianDate:
         if max_days[self.month] < self.day:
             raise ValueError(f"Invalid day, month combination {self.month}/{self.day}")
 
+    def __eq__(self, other):
+        return (
+            self.day == other.day
+            and self.month == other.month
+            and self.year == other.year
+        )
+
     def __repr__(self):
         return f"({self.day}, {self.month}, {self.year})"
 
@@ -296,6 +303,13 @@ class GregorianDate:
         if max_days[self.month] < self.day:
             raise ValueError(f"Invalid day, month combination {self.month}/{self.day}")
 
+    def __eq__(self, other):
+        return (
+            self.day == other.day
+            and self.month == other.month
+            and self.year == other.year
+        )
+
     def __repr__(self):
         return f"({self.day}, {self.month}, {self.year})"
 
@@ -359,7 +373,7 @@ def _convert_julian_day(julian_day, mode="julian"):
 
     day = (h % s) // u + 1  # day in target calendar
     month = ((h // s + m) % n) + 1  # month in target calendar
-    year = (e // p) - (y + (n + m - month) // n)  # year in target calendar
+    year = (e // p) - y + ((n + m - month) // n)  # year in target calendar
 
     return day, month, year
 

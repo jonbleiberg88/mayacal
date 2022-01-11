@@ -1,6 +1,7 @@
 import pytest
 
 from mayacal import LongCount, DistanceNumber
+from mayacal.utils.utils import GregorianDate
 
 
 @pytest.fixture
@@ -15,6 +16,21 @@ class TestLongCount:
         assert (
             str(calendar_round) == "11 Akbal 16 Keh"
         ), "Incorrect calendar round conversion!"
+
+    @pytest.mark.parametrize(
+        "long_count,gregorian_date",
+        [(LongCount(13, 0, 9, 3, 7), GregorianDate(10, 1, 2022))],
+    )
+    def test_to_gregorian(self, long_count, gregorian_date):
+        converted_date = long_count.to_gregorian()
+
+        assert isinstance(
+            converted_date, GregorianDate
+        ), "Conversion to gregorian did not return a GregorianDate!"
+
+        assert (
+            converted_date == gregorian_date
+        ), "Incorrect conversion to Gregorian date"
 
 
 class TestDistanceNumber:
