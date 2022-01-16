@@ -1,5 +1,7 @@
 mayacal/__pycache__/*
 mayacal/utils/__pycache__/*
+tests/utils/__pycache__/*
+tests/__pycache__/*
 __pycache__/*
 .DS_STORE
 build/*

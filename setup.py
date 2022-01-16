@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="mayacal",
     packages=["mayacal", "mayacal.utils"],
-    version="0.2.3-alpha",
+    version="0.2.5",
     license="MIT",
     description="Basic calendar functions for the classical Mayan calendar",
     author="Jon Bleiberg",
