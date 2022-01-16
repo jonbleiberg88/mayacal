@@ -1,3 +1,4 @@
 include mayacal/*
 include mayacal/utils/*
+exclude tests/*.py
 LICENSE.txt
