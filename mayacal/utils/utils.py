@@ -86,7 +86,7 @@ class JulianDate:
                 Julian calendar date.
 
         """
-        return julian_day_to_gregorian(round(self.to_julian_day()))
+        return julian_day_to_gregorian(math.ceil(self.to_julian_day()))
 
     def to_mayadate(self, correlation=584283):
         """Converts the Julian calendar date to its Mayan calendar equivalent
@@ -100,7 +100,7 @@ class JulianDate:
         from .long_count import LongCount, kin_to_long_count
         from .mayadate import Mayadate
 
-        num_kin = round(self.to_julian_day()) - correlation
+        num_kin = math.ceil(self.to_julian_day()) - correlation
         long_count = kin_to_long_count(num_kin)
 
         return Mayadate(long_count, None)
@@ -231,7 +231,7 @@ class GregorianDate:
                 calendar date.
 
         """
-        return julian_day_to_julian(round(self.to_julian_day))
+        return julian_day_to_julian(math.ceil(self.to_julian_day()))
 
     def to_mayadate(self, correlation=584283):
         """Converts the Gregorian calendar date to its Mayan calendar equivalent
@@ -244,7 +244,7 @@ class GregorianDate:
         from .long_count import LongCount, kin_to_long_count
         from .mayadate import Mayadate
 
-        num_kin = round(self.to_julian_day()) - correlation
+        num_kin = math.ceil(self.to_julian_day()) - correlation
         long_count = kin_to_long_count(num_kin)
 
         return Mayadate(long_count, None)
@@ -343,7 +343,7 @@ def _convert_julian_day(julian_day, mode="julian"):
         raise ValueError(
             "Algorithm only valid for Julian Day greater than or equal to zero"
         )
-    julian_day = round(julian_day)
+    julian_day = math.ceil(julian_day)
 
     # algorithm parameters
     y = 4716

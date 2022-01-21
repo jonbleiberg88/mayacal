@@ -1,5 +1,6 @@
 import pytest
 
+from mayacal import LongCount, Mayadate
 from mayacal.utils.utils import (
     GregorianDate,
     JulianDate,
@@ -14,8 +15,11 @@ class TestGregorianDate:
         "gregorian_date, expected_julian_day",
         [
             (GregorianDate(10, 1, 2022), 2459589.5),
+            (GregorianDate(11, 1, 2022), 2459590.5),
             (GregorianDate(22, 3, 683), 1970600.5),
             (GregorianDate(10, 8, 234), 1806747.5),
+            (GregorianDate(18, 1, 2022), 2459597.5),
+            (GregorianDate(19, 1, 2022), 2459598.5),
         ],
     )
     def test_to_julian_day(self, gregorian_date, expected_julian_day):
@@ -24,6 +28,36 @@ class TestGregorianDate:
         assert (
             julian_day == expected_julian_day
         ), "Incorrect conversion to from GregorianDate to Julian day!"
+
+    @pytest.mark.parametrize(
+        "gregorian_date, expected_long_count",
+        [
+            (GregorianDate(10, 1, 2022), LongCount(13, 0, 9, 3, 7)),
+            (GregorianDate(11, 1, 2022), LongCount(13, 0, 9, 3, 8)),
+            (GregorianDate(22, 3, 683), LongCount(9, 12, 10, 15, 18)),
+            (GregorianDate(10, 8, 234), LongCount(8, 9, 15, 13, 5)),
+            (GregorianDate(18, 1, 2022), LongCount(13, 0, 9, 3, 15)),
+            (GregorianDate(19, 1, 2022), LongCount(13, 0, 9, 3, 16)),
+        ],
+    )
+    def test_to_mayadate(self, gregorian_date, expected_long_count):
+
+        result = gregorian_date.to_mayadate()
+
+        assert isinstance(result, Mayadate)
+        assert result.long_count == expected_long_count
+
+    @pytest.mark.parametrize(
+        "gregorian_date, expected_julian_date",
+        [
+            (GregorianDate(17, 7, 1578), JulianDate(7, 7, 1578)),
+            (GregorianDate(24, 10, 232), JulianDate(24, 10, 232)),
+            (GregorianDate(19, 1, 2022), JulianDate(6, 1, 2022)),
+        ],
+    )
+    def test_to_julian(self, gregorian_date, expected_julian_date):
+        result = gregorian_date.to_julian()
+        assert result == expected_julian_date
 
 
 @pytest.mark.parametrize(
