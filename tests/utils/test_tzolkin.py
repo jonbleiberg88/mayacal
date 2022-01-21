@@ -19,13 +19,13 @@ class TestTzolkin:
         assert tzolkin.day_name == "Chikchan"
         assert tzolkin.day_number == 12
 
-    def test_constructor_with_invalid_day(self):
+    def test_constructor_with_invalid_day_name(self):
         day_number, day_name = 12, "Monday"
         with pytest.raises(ValueError) as exception:
             Tzolkin(day_number, day_name)
             assert str(exception) == f"Invalid tzolkin day name {day_name}"
 
-    def test_constructor_with_invalid_day(self):
+    def test_constructor_with_invalid_day_number(self):
         day_number, day_name = 44, "Imix"
         with pytest.raises(ValueError) as exception:
             Tzolkin(day_number, day_name)

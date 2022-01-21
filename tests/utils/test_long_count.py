@@ -19,7 +19,10 @@ class TestLongCount:
 
     @pytest.mark.parametrize(
         "long_count,gregorian_date",
-        [(LongCount(13, 0, 9, 3, 7), GregorianDate(10, 1, 2022))],
+        [
+            (LongCount(13, 0, 9, 3, 7), GregorianDate(10, 1, 2022)),
+            (LongCount(13, 0, 9, 3, 16), GregorianDate(19, 1, 2022)),
+        ],
     )
     def test_to_gregorian(self, long_count, gregorian_date):
         converted_date = long_count.to_gregorian()

@@ -16,6 +16,7 @@ class TestGregorianDate:
             (GregorianDate(10, 1, 2022), 2459589.5),
             (GregorianDate(22, 3, 683), 1970600.5),
             (GregorianDate(10, 8, 234), 1806747.5),
+            (GregorianDate(19, 1, 2022), 2459599),
         ],
     )
     def test_to_julian_day(self, gregorian_date, expected_julian_day):
